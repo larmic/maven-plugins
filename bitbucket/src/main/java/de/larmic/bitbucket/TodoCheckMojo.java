@@ -28,7 +28,7 @@ import java.util.TreeMap;
  */
 public class TodoCheckMojo extends AbstractMojo {
 
-    public static final String REST_REPOSITORY_URL = "https://bitbucket.org/api/1.0/repositories/larmicBB/larmic-bitbucket/";
+    public static final String REST_REPOSITORY_URL = "https://bitbucket.org/api/1.0/repositories/larmicBB/larmic-maven-plugins/";
     public static final String TICKET_STATUS_RESOLVED = "resolved";
     public static final String TICKET_STATUS = "status";
 
