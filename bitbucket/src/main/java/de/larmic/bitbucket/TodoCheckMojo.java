@@ -28,9 +28,19 @@ import java.util.TreeMap;
  */
 public class TodoCheckMojo extends AbstractMojo {
 
-    public static final String REST_REPOSITORY_URL = "https://bitbucket.org/api/1.0/repositories/larmicBB/larmic-maven-plugins/";
+    public static final String REST_REPOSITORY_URL = "https://bitbucket.org/api/1.0/repositories/";
     public static final String TICKET_STATUS_RESOLVED = "resolved";
     public static final String TICKET_STATUS = "status";
+
+    /**
+     * @parameter expression="${accountName}"
+     */
+    private String accountName;
+
+    /**
+     * @parameter expression="${repositorySlug}"
+     */
+    private String repositorySlug;
 
     /**
      * @parameter expression="${project.build.sourceDirectory}"
@@ -43,15 +53,26 @@ public class TodoCheckMojo extends AbstractMojo {
     private File testSourceDirectory;
 
     public void execute() throws MojoExecutionException {
+
+        if (this.accountName == null) {
+            throw new MojoExecutionException("bitbucket account name is not set. Use -DaccountName=... or set property in pom.xml");
+        }
+
+        if (this.repositorySlug == null) {
+            throw new MojoExecutionException("bitbucket repository slug is not set. Use -DrepositorySlug=... or set property in pom.xml");
+        }
+
+        final String repositoryUrl = this.buildRepositoryUrl(this.accountName, this.repositorySlug);
+
         try {
-            walkFileTreeInDirectory(sourceDirectory);
-            walkFileTreeInDirectory(testSourceDirectory);
+            walkFileTreeInDirectory(sourceDirectory, repositoryUrl);
+            walkFileTreeInDirectory(testSourceDirectory, repositoryUrl);
         } catch (IOException e) {
             getLog().error("Could not walk directory", e);
         }
     }
 
-    private void walkFileTreeInDirectory(final File directory) throws IOException {
+    private void walkFileTreeInDirectory(final File directory, final String repositoryUrl) throws IOException {
         getLog().info("Checking TODOs in directory " + directory.getAbsolutePath());
 
         Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
@@ -63,7 +84,7 @@ public class TodoCheckMojo extends AbstractMojo {
                     getLog().info("Found " + todos.size() + " TODOs in file " + file.getFileName());
 
                     for (Map.Entry<Integer, TodoMatcher> entry : todos.entrySet()) {
-                        logTodo(todos.get(entry.getKey()), entry.getKey());
+                        logTodo(todos.get(entry.getKey()), entry.getKey(), repositoryUrl);
                     }
                 }
 
@@ -95,12 +116,16 @@ public class TodoCheckMojo extends AbstractMojo {
         return new TreeMap<>(todos);
     }
 
-    private void logTodo(final TodoMatcher matcher, final int lineNumber) throws IOException {
+    private String buildRepositoryUrl(final String bitbucketAccountName, final String bitbucketRepositorySlug) {
+        return REST_REPOSITORY_URL + bitbucketAccountName + "/" + bitbucketRepositorySlug + "/";
+    }
+
+    private void logTodo(final TodoMatcher matcher, final int lineNumber, final String repositoryUrl) throws IOException {
         if (matcher.getTicketNumber() != null) {
             final CloseableHttpClient httpclient = HttpClients.createDefault();
 
             try {
-                final HttpGet httpGet = new HttpGet(REST_REPOSITORY_URL + "issues/" + matcher.getTicketNumber());
+                final HttpGet httpGet = new HttpGet(repositoryUrl + "issues/" + matcher.getTicketNumber());
                 final CloseableHttpResponse response = httpclient.execute(httpGet);
 
                 if (response.getStatusLine().getStatusCode() != 200) {

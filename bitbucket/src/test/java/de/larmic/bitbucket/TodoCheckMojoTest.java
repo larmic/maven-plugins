@@ -23,6 +23,8 @@ public class TodoCheckMojoTest {
         final Log logMock = mock(Log.class);
         final TodoCheckMojo mojo = new TodoCheckMojo();
 
+        this.setField(mojo, "accountName", "larmicBB");
+        this.setField(mojo, "repositorySlug", "larmic-maven-plugins");
         this.setField(mojo, "sourceDirectory", new File("./"));
         this.setField(mojo, "testSourceDirectory", new File("./"));
 
