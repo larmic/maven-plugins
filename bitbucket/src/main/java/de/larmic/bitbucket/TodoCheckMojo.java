@@ -125,8 +125,7 @@ public class TodoCheckMojo extends AbstractMojo {
             final CloseableHttpClient httpclient = HttpClients.createDefault();
 
             try {
-                final HttpGet httpGet = new HttpGet(repositoryUrl + "issues/" + matcher.getTicketNumber());
-                final CloseableHttpResponse response = httpclient.execute(httpGet);
+                final CloseableHttpResponse response = callBitBucketUsingRestApi(matcher, repositoryUrl, httpclient);
 
                 if (response.getStatusLine().getStatusCode() != 200) {
                     getLog().error("Line " + (lineNumber + 1) + ": Could not find ticket number #" + matcher.getTicketNumber());
@@ -143,6 +142,13 @@ public class TodoCheckMojo extends AbstractMojo {
         } else {
             getLog().info("Line " + (lineNumber + 1) + ": // TODO " + matcher.getTodoDescription());
         }
+    }
+
+    private CloseableHttpResponse callBitBucketUsingRestApi(final TodoMatcher matcher,
+                                                            final String repositoryUrl,
+                                                            final CloseableHttpClient httpclient) throws IOException {
+        final HttpGet httpGet = new HttpGet(repositoryUrl + "issues/" + matcher.getTicketNumber());
+        return httpclient.execute(httpGet);
     }
 
     private boolean isTicketClosed(final CloseableHttpResponse response) throws IOException {
