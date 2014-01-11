@@ -9,7 +9,7 @@ message if ticket is already resolved.
 
 Actually no maven repository is used so you have to install maven plugin by yourself.
 
-* Checkout the source: `git@bitbucket.org:larmicBB/larmic-maven-plugins.git` and install it yourself.
+* Checkout the source: `git clone git@bitbucket.org:larmicBB/larmic-maven-plugins.git` and install it yourself.
 * Use maven to install it `maven install`
 
 ## Getting started
@@ -54,3 +54,8 @@ You can set bitbucket repository account name and slug in your maven pom.xml
 </project>
 ```
 
+Now you can call maven plugin without explicit indicating property
+
+    $ bitbucket:$pluginGoal
+
+### Examples
