@@ -23,6 +23,13 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Lars Michaelis</name>
+            <email>mail@larmic.de</email>
+        </developer>
+    </developers>
+
     <scm>
         <connection>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</connection>
         <url>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</url>
