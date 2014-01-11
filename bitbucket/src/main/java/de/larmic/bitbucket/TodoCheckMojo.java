@@ -64,33 +64,55 @@ public class TodoCheckMojo extends AbstractMojo {
 
         final String repositoryUrl = this.buildRepositoryUrl(this.accountName, this.repositorySlug);
 
+        getLog().info("");
+
+        int numberOfTodos = 0;
+
+        numberOfTodos += this.walkFileTreeInDirectory("Source directory", sourceDirectory, repositoryUrl);
+        numberOfTodos += this.walkFileTreeInDirectory("Test source directory", testSourceDirectory, repositoryUrl);
+
+        getLog().info("Checking TODOs completed. Found " + numberOfTodos + " TODOs.");
+        getLog().info("");
+    }
+
+    private int walkFileTreeInDirectory(final String directoryType, final File directory, final String repositoryUrl) {
+        if (directory == null) {
+            getLog().info(directoryType + " does not exists. Directory will be skipped");
+
+            return 0;
+        }
+
+        getLog().info("Checking TODOs in directory " + directory.getAbsolutePath());
+        getLog().info("");
+
+        final int[] numberOfTodos = new int[1];
+
         try {
-            walkFileTreeInDirectory(sourceDirectory, repositoryUrl);
-            walkFileTreeInDirectory(testSourceDirectory, repositoryUrl);
+            Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    final Map<Integer, TodoMatcher> todos = readTodosFromFile(file);
+
+                    if (!todos.isEmpty()) {
+                        for (Map.Entry<Integer, TodoMatcher> entry : todos.entrySet()) {
+                            logTodo(file.getFileName().toString(), todos.get(entry.getKey()), entry.getKey(), repositoryUrl);
+                        }
+                    }
+
+                    numberOfTodos[0] = todos.size();
+
+                    return FileVisitResult.CONTINUE;
+                }
+            });
         } catch (IOException e) {
             getLog().error("Could not walk directory", e);
         }
-    }
 
-    private void walkFileTreeInDirectory(final File directory, final String repositoryUrl) throws IOException {
-        getLog().info("Checking TODOs in directory " + directory.getAbsolutePath());
+        getLog().info("");
+        getLog().info("Found  " + numberOfTodos[0] + " in directory " + directory.getAbsolutePath());
+        getLog().info("");
 
-        Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                final Map<Integer, TodoMatcher> todos = readTodosFromFile(file);
-
-                if (!todos.isEmpty()) {
-                    getLog().info("Found " + todos.size() + " TODOs in file " + file.getFileName());
-
-                    for (Map.Entry<Integer, TodoMatcher> entry : todos.entrySet()) {
-                        logTodo(todos.get(entry.getKey()), entry.getKey(), repositoryUrl);
-                    }
-                }
-
-                return FileVisitResult.CONTINUE;
-            }
-        });
+        return numberOfTodos[0];
     }
 
     private Map<Integer, TodoMatcher> readTodosFromFile(final Path file) throws IOException {
@@ -120,7 +142,7 @@ public class TodoCheckMojo extends AbstractMojo {
         return REST_REPOSITORY_URL + bitbucketAccountName + "/" + bitbucketRepositorySlug + "/";
     }
 
-    private void logTodo(final TodoMatcher matcher, final int lineNumber, final String repositoryUrl) throws IOException {
+    private void logTodo(final String fileName, final TodoMatcher matcher, final int lineNumber, final String repositoryUrl) throws IOException {
         if (matcher.getTicketNumber() != null) {
             final CloseableHttpClient httpclient = HttpClients.createDefault();
 
@@ -128,20 +150,42 @@ public class TodoCheckMojo extends AbstractMojo {
                 final CloseableHttpResponse response = callBitBucketUsingRestApi(matcher, repositoryUrl, httpclient);
 
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    getLog().error("Line " + (lineNumber + 1) + ": Could not find ticket number #" + matcher.getTicketNumber());
+                    getLog().error(createTodoLog(fileName, lineNumber, matcher.getTodoDescription(), "Could not find ticket"));
                 } else {
                     if (isTicketClosed(response)) {
-                        getLog().error("Line " + (lineNumber + 1) + ": Ticket #" + matcher.getTicketNumber() + " is resolved");
+                        getLog().error(createTodoLog(fileName, lineNumber, matcher.getTodoDescription(), "Ticket is resolved"));
                     } else {
-                        getLog().info("Line " + (lineNumber + 1) + ": // TODO #" + matcher.getTicketNumber() + " " + matcher.getTodoDescription());
+                        getLog().info(createTodoLog(fileName, lineNumber, matcher.getTodoDescription()));
                     }
                 }
             } finally {
                 httpclient.close();
             }
         } else {
-            getLog().info("Line " + (lineNumber + 1) + ": // TODO " + matcher.getTodoDescription());
+            getLog().info(createTodoLog(fileName, lineNumber, matcher.getTodoDescription()));
         }
+    }
+
+    private String createTodoLog(final String fileName, final int lineNumber, final String todoText) {
+        return this.createTodoLog(fileName, lineNumber, todoText, null);
+    }
+
+    private String createTodoLog(final String fileName, final int lineNumber, final String todoText, final String optional) {
+        final StringBuilder log = new StringBuilder();
+
+        if (optional != null && !"".equals(optional)) {
+            log.append("[");
+            log.append(optional.toUpperCase());
+            log.append("] ");
+        }
+        log.append(fileName);
+        log.append(" Line: ");
+        log.append(lineNumber + 1);
+        log.append(", Text: ");
+        log.append(todoText);
+
+
+        return log.toString();
     }
 
     private CloseableHttpResponse callBitBucketUsingRestApi(final TodoMatcher matcher,

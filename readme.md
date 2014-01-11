@@ -98,13 +98,23 @@ Call bitbucket checkTodo plugin
     [INFO] ------------------------------------------------------------------------
     [INFO]
     [INFO] --- bitbucket:1.0-SNAPSHOT:checkTodo (default-cli) @ bitbucket ---
+    [INFO]
     [INFO] Checking TODOs in directory /Users/larmic/Work/Private/workspace/larmic-maven-plugins/bitbucket/src/main/java
+    [INFO]
+    [INFO]
+    [INFO] Found  0 in directory /Users/larmic/Work/Private/workspace/larmic-maven-plugins/bitbucket/src/main/java
+    [INFO]
     [INFO] Checking TODOs in directory /Users/larmic/Work/Private/workspace/larmic-maven-plugins/bitbucket/src/test/java
-    [INFO] Found 4 TODOs in file TodoCheckMojoTest.java
-    [INFO] Line 3: // TODO no bitbucket ticket
-    [ERROR] Line 4: Could not find ticket number #0
-    [INFO] Line 5: // TODO #1 open bitbucket ticket
-    [ERROR] Line 6: Ticket #2 is resolved
+    [INFO]
+    [INFO] TodoCheckMojoTest.java Line: 3, Text: no bitbucket ticket
+    [ERROR] [COULD NOT FIND TICKET] TodoCheckMojoTest.java Line: 4, Text: not existing bitbucket ticket
+    [INFO] TodoCheckMojoTest.java Line: 5, Text: open bitbucket ticket
+    [ERROR] [TICKET IS RESOLVED] TodoCheckMojoTest.java Line: 6, Text: closed bitbucket ticket
+    [INFO]
+    [INFO] Found  0 in directory /Users/larmic/Work/Private/workspace/larmic-maven-plugins/bitbucket/src/test/java
+    [INFO]
+    [INFO] Checking TODOs completed. Found 0 TODOs.
+    [INFO]
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESS
     [INFO] ------------------------------------------------------------------------

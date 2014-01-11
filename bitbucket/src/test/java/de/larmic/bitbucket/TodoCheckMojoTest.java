@@ -36,17 +36,36 @@ public class TodoCheckMojoTest {
         this.setField(mojo, "sourceDirectory", new File("./"));
         this.setField(mojo, "testSourceDirectory", new File("./"));
 
+        // call execute method to log result
+        // helpful when debug a test problem
         mojo.execute();
 
         mojo.setLog(logMock);
 
         mojo.execute();
 
-        verify(logMock, times(2)).info("Found 4 TODOs in file " + this.getClass().getSimpleName() + ".java");
-        verify(logMock, times(2)).info("Line 3: // TODO no bitbucket ticket");
-        verify(logMock, times(2)).error("Line 4: Could not find ticket number #0");
-        verify(logMock, times(2)).info("Line 5: // TODO #1 open bitbucket ticket");
-        verify(logMock, times(2)).error("Line 6: Ticket #2 is resolved");
+        verify(logMock, times(2)).info(this.getClass().getSimpleName() + ".java Line: 3, Text: no bitbucket ticket");
+        verify(logMock, times(2)).error("[COULD NOT FIND TICKET] " + this.getClass().getSimpleName() + ".java Line: 4, Text: not existing bitbucket ticket");
+        verify(logMock, times(2)).info(this.getClass().getSimpleName() + ".java Line: 5, Text: open bitbucket ticket");
+        verify(logMock, times(2)).error("[TICKET IS RESOLVED] " + this.getClass().getSimpleName() + ".java Line: 6, Text: closed bitbucket ticket");
+    }
+
+    @Test
+    public void testExecuteNoTestSourceDirectory() throws Exception {
+        this.setField(mojo, "accountName", "larmicBB");
+        this.setField(mojo, "repositorySlug", "larmic-maven-plugins");
+        this.setField(mojo, "sourceDirectory", new File("./"));
+
+        mojo.execute();
+    }
+
+    @Test
+    public void testExecuteNoSourceDirectory() throws Exception {
+        this.setField(mojo, "accountName", "larmicBB");
+        this.setField(mojo, "repositorySlug", "larmic-maven-plugins");
+        this.setField(mojo, "testSourceDirectory", new File("./"));
+
+        mojo.execute();
     }
 
     @Test(expectedExceptions = MojoExecutionException.class)
