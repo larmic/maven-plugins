@@ -48,6 +48,9 @@
         <json-simple.version>1.1.1</json-simple.version>
         <httpclient.version>4.3.1</httpclient.version>
 
+        <maven-release-plugin.version>2.4.2</maven-release-plugin.version>
+        <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
+
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
@@ -57,7 +60,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.4.2</version>
+                <version>${maven-release-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${maven-plugin-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
