@@ -1,7 +1,4 @@
-larmic-maven-plugins - A collection of maven plugins
-=============
-
-
+# larmic-maven-plugins - A collection of maven plugins
 
 ## Install
 
@@ -14,8 +11,7 @@ Actually no maven repository is used so you have to install maven plugin by your
 
 There are multiple ways you can use larmic-maven-plugins.
 
-Using console
--------------
+### Using console
 
 Call
 
@@ -23,8 +19,7 @@ Call
 
 in your maven project root directory you want to execute goal in.
 
-Using pom.xml settings
-----------------------
+### Using pom.xml settings
 
 Add
 
