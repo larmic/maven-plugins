@@ -101,7 +101,6 @@ Call bitbucket checkTodo plugin
     [INFO]
     [INFO] Checking TODOs in directory /Users/larmic/Work/Private/workspace/larmic-maven-plugins/bitbucket/src/main/java
     [INFO]
-    [INFO]
     [INFO] Found  0 in directory /Users/larmic/Work/Private/workspace/larmic-maven-plugins/bitbucket/src/main/java
     [INFO]
     [INFO] Checking TODOs in directory /Users/larmic/Work/Private/workspace/larmic-maven-plugins/bitbucket/src/test/java

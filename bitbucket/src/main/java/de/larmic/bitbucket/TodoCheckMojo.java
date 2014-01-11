@@ -108,7 +108,9 @@ public class TodoCheckMojo extends AbstractMojo {
             getLog().error("Could not walk directory", e);
         }
 
-        getLog().info("");
+        if (numberOfTodos[0] > 0) {
+            getLog().info("");
+        }
         getLog().info("Found  " + numberOfTodos[0] + " in directory " + directory.getAbsolutePath());
         getLog().info("");
 
