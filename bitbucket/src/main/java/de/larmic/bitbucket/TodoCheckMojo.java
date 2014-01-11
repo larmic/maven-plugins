@@ -71,7 +71,7 @@ public class TodoCheckMojo extends AbstractMojo {
         numberOfTodos += this.walkFileTreeInDirectory("Source directory", sourceDirectory, repositoryUrl);
         numberOfTodos += this.walkFileTreeInDirectory("Test source directory", testSourceDirectory, repositoryUrl);
 
-        getLog().info("Checking TODOs completed. Found " + numberOfTodos + " TODOs.");
+        getLog().info("Scan completed. Found " + numberOfTodos + " TODOs.");
         getLog().info("");
     }
 
@@ -82,7 +82,7 @@ public class TodoCheckMojo extends AbstractMojo {
             return 0;
         }
 
-        getLog().info("Checking TODOs in directory " + directory.getAbsolutePath());
+        getLog().info("Scanning in directory " + directory.getAbsolutePath());
         getLog().info("");
 
         final int[] numberOfTodos = new int[1];
@@ -99,7 +99,7 @@ public class TodoCheckMojo extends AbstractMojo {
                         }
                     }
 
-                    numberOfTodos[0] = todos.size();
+                    numberOfTodos[0] += todos.size();
 
                     return FileVisitResult.CONTINUE;
                 }
@@ -111,7 +111,7 @@ public class TodoCheckMojo extends AbstractMojo {
         if (numberOfTodos[0] > 0) {
             getLog().info("");
         }
-        getLog().info("Found  " + numberOfTodos[0] + " in directory " + directory.getAbsolutePath());
+        getLog().info("Found " + numberOfTodos[0] + " in directory " + directory.getAbsolutePath());
         getLog().info("");
 
         return numberOfTodos[0];
