@@ -1,4 +1,9 @@
-# larmic-maven-plugins - A collection of maven plugins
+# larmic-maven-plugins
+
+Containing maven plugins:
+
+* **bitbucket:checkTodo** Logs info messages to find all code Todos in source and test source directory. Checks bitbucket ticket status and logs error
+message if ticket is already resolved.
 
 ## Install
 
@@ -15,7 +20,7 @@ There are multiple ways you can use larmic-maven-plugins.
 
 Call
 
-    $ de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -DaccountName=$myBtbucketAccount -DrepositorySlug=$myBitbucketRepository
+    $ de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -DaccountName=$repositoryBitbucketAccount -DrepositorySlug=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
 
@@ -31,8 +36,21 @@ Add
 
 to your maven settings.xml and call
 
-    $ bitbucket:$pluginGoal -DaccountName=$myBtbucketAccount -DrepositorySlug=$myBitbucketRepository
+    $ bitbucket:$pluginGoal -DaccountName=$repositoryBitbucketAccount -DrepositorySlug=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
 
+### Configuring account name and Repository slug in pom.xml
+
+You can set bitbucket repository account name and slug in your maven pom.xml
+
+```xml
+<project>
+    ...
+    <properties>
+        <bitbucket:accountName>$repositoryBitbucketAccount</bitbucket:accountName>
+        <bitbucket:repositorySlug>$bitbucketRepositorySlug</bitbucket:repositorySlug>
+    </properties>
+</project>
+```
 

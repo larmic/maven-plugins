@@ -33,12 +33,12 @@ public class TodoCheckMojo extends AbstractMojo {
     public static final String TICKET_STATUS = "status";
 
     /**
-     * @parameter expression="${accountName}"
+     * @parameter expression="${bitbucket.accountName}"
      */
     private String accountName;
 
     /**
-     * @parameter expression="${repositorySlug}"
+     * @parameter expression="${bitbucket.repositorySlug}"
      */
     private String repositorySlug;
 

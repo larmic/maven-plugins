@@ -42,17 +42,24 @@
         <project.build.sourceEncoding>${default.encoding}</project.build.sourceEncoding>
         <maven.version>3.0.0</maven.version>
 
-        <maven-plugin-api.version>3.1.1</maven-plugin-api.version>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+
+        <!-- dependency versions -->
         <testng.version>6.8.7</testng.version>
         <mockito-all.version>1.9.5</mockito-all.version>
         <json-simple.version>1.1.1</json-simple.version>
         <httpclient.version>4.3.1</httpclient.version>
 
+        <!-- maven plugin dependency version -->
+        <maven-plugin-api.version>3.1.1</maven-plugin-api.version>
         <maven-release-plugin.version>2.4.2</maven-release-plugin.version>
         <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
 
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+
+        <!-- bitbucket properties -->
+        <bitbucket.accountName>larmicBB</bitbucket.accountName>
+        <bitbucket.repositorySlug>larmic-maven-plugins</bitbucket.repositorySlug>
     </properties>
 
     <build>
