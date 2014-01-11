@@ -19,7 +19,7 @@ Using console
 
 Call
 
-$ de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -DaccountName=$myBtbucketAccount -DrepositorySlug=$myBitbucketRepository
+    $ de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -DaccountName=$myBtbucketAccount -DrepositorySlug=$myBitbucketRepository
 
 in your maven project root directory you want to execute goal in.
 
@@ -36,7 +36,7 @@ Add
 
 to your maven settings.xml and call
 
-$ bitbucket:$pluginGoal -DaccountName=$myBtbucketAccount -DrepositorySlug=$myBitbucketRepository
+    $ bitbucket:$pluginGoal -DaccountName=$myBtbucketAccount -DrepositorySlug=$myBitbucketRepository
 
 in your maven project root directory you want to execute goal in.
 
