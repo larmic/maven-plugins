@@ -1,9 +1,6 @@
 package de.larmic.bitbucket;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.json.simple.JSONObject;
@@ -28,7 +25,6 @@ import java.util.TreeMap;
  */
 public class TodoCheckMojo extends AbstractMojo {
 
-    public static final String REST_REPOSITORY_URL = "https://bitbucket.org/api/1.0/repositories/";
     public static final String TICKET_STATUS_RESOLVED = "resolved";
     public static final String TICKET_STATUS = "status";
 
@@ -62,20 +58,18 @@ public class TodoCheckMojo extends AbstractMojo {
             throw new MojoExecutionException("bitbucket repository slug is not set. Use -DrepositorySlug=... or set property in pom.xml");
         }
 
-        final String repositoryUrl = this.buildRepositoryUrl(this.accountName, this.repositorySlug);
-
         getLog().info("");
 
         int numberOfTodos = 0;
 
-        numberOfTodos += this.walkFileTreeInDirectory("Source directory", sourceDirectory, repositoryUrl);
-        numberOfTodos += this.walkFileTreeInDirectory("Test source directory", testSourceDirectory, repositoryUrl);
+        numberOfTodos += this.walkFileTreeInDirectory("Source directory", sourceDirectory);
+        numberOfTodos += this.walkFileTreeInDirectory("Test source directory", testSourceDirectory);
 
         getLog().info("Scan completed. Found " + numberOfTodos + " TODOs.");
         getLog().info("");
     }
 
-    private int walkFileTreeInDirectory(final String directoryType, final File directory, final String repositoryUrl) {
+    private int walkFileTreeInDirectory(final String directoryType, final File directory) {
         if (directory == null) {
             getLog().info(directoryType + " does not exists. Directory will be skipped");
 
@@ -95,7 +89,7 @@ public class TodoCheckMojo extends AbstractMojo {
 
                     if (!todos.isEmpty()) {
                         for (Map.Entry<Integer, TodoMatcher> entry : todos.entrySet()) {
-                            logTodo(file.getFileName().toString(), todos.get(entry.getKey()), entry.getKey(), repositoryUrl);
+                            logTodo(file.getFileName().toString(), todos.get(entry.getKey()), entry.getKey());
                         }
                     }
 
@@ -140,16 +134,12 @@ public class TodoCheckMojo extends AbstractMojo {
         return new TreeMap<>(todos);
     }
 
-    private String buildRepositoryUrl(final String bitbucketAccountName, final String bitbucketRepositorySlug) {
-        return REST_REPOSITORY_URL + bitbucketAccountName + "/" + bitbucketRepositorySlug + "/";
-    }
-
-    private void logTodo(final String fileName, final TodoMatcher matcher, final int lineNumber, final String repositoryUrl) throws IOException {
+    private void logTodo(final String fileName, final TodoMatcher matcher, final int lineNumber) throws IOException {
         if (matcher.getTicketNumber() != null) {
-            final CloseableHttpClient httpclient = HttpClients.createDefault();
+            final BitbucketApiClient bitbucketApiClient = new BitbucketApiClient(this.accountName, this.repositorySlug);
 
             try {
-                final CloseableHttpResponse response = callBitBucketUsingRestApi(matcher, repositoryUrl, httpclient);
+                final CloseableHttpResponse response = bitbucketApiClient.execute("issues/" + matcher.getTicketNumber());
 
                 if (response.getStatusLine().getStatusCode() != 200) {
                     getLog().error(createTodoLog(fileName, lineNumber, matcher.getTodoDescription(), "Could not find ticket"));
@@ -161,7 +151,7 @@ public class TodoCheckMojo extends AbstractMojo {
                     }
                 }
             } finally {
-                httpclient.close();
+                bitbucketApiClient.close();
             }
         } else {
             getLog().info(createTodoLog(fileName, lineNumber, matcher.getTodoDescription()));
@@ -188,13 +178,6 @@ public class TodoCheckMojo extends AbstractMojo {
 
 
         return log.toString();
-    }
-
-    private CloseableHttpResponse callBitBucketUsingRestApi(final TodoMatcher matcher,
-                                                            final String repositoryUrl,
-                                                            final CloseableHttpClient httpclient) throws IOException {
-        final HttpGet httpGet = new HttpGet(repositoryUrl + "issues/" + matcher.getTicketNumber());
-        return httpclient.execute(httpGet);
     }
 
     private boolean isTicketClosed(final CloseableHttpResponse response) throws IOException {
