@@ -92,7 +92,7 @@
                     <!-- see https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven -->
                     <mavenExecutorId>forked-path</mavenExecutorId>
                     <useReleaseProfile>false</useReleaseProfile>
-                    <arguments>${gpg-phrase} -Psonatype-oss-release -DperformRelease=true</arguments>
+                    <arguments>${arguments} -Psonatype-oss-release</arguments>
                 </configuration>
             </plugin>
             <plugin>
