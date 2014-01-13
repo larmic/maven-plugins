@@ -7,7 +7,7 @@
 
     <name>A collection of maven plugins</name>
     <description>A collection of maven plugins</description>
-    <version>1.0-Aplha6-SNAPSHOT</version>
+    <version>1.0-Aplha6</version>
 
     <url>https://bitbucket.org/larmicBB/larmic-maven-plugins</url>
 
@@ -33,7 +33,7 @@
         <connection>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</connection>
         <url>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</url>
         <developerConnection>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>larmic-maven-plugin-1.0-Aplha6</tag>
     </scm>
 
     <distributionManagement>
