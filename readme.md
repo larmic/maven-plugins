@@ -20,7 +20,7 @@ There are multiple ways you can use larmic-maven-plugins.
 
 Call
 
-    $ de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -Dbitbucket.accountName=$repositoryBitbucketAccount
+    $ mvn de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -Dbitbucket.accountName=$repositoryBitbucketAccount
     -Dbitbucket.repositorySlug=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
@@ -37,7 +37,7 @@ Add
 
 to your maven settings.xml and call
 
-    $ bitbucket:$pluginGoal -Dbitbucket.userName=$repositoryBitbucketAccount -Dbitbucket.password=$bitbucketRepositorySlug
+    $ mvn bitbucket:$pluginGoal -Dbitbucket.userName=$repositoryBitbucketAccount -Dbitbucket.password=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
 
@@ -60,7 +60,7 @@ You can set bitbucket repository account name and slug in your maven pom.xml
 
 Now you can call maven plugin without explicit indicating property
 
-    $ bitbucket:$pluginGoal
+    $ mvn bitbucket:$pluginGoal
 
 ## Examples
 
