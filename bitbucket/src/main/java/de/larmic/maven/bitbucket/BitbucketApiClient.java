@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class BitbucketApiClient {
 
-    public static final String BITBUCKET_API_HOST = "api.maven.org";
+    public static final String BITBUCKET_API_HOST = "api.bitbucket.org";
     public static final String BITBUCKET_API_I_FORMAT = "https://%s/1.0/repositories/%s/%s/";
     public static final int STATUS_CODE_OK = 200;
 
@@ -52,8 +52,8 @@ public class BitbucketApiClient {
         this.basicAuthContext = createBasicAuthenticationContext(this.basicAuthHost, userName, password);
     }
 
-    public CloseableHttpResponse execute(final String apiUrlPath) throws IOException {
-        final HttpGet httpGet = new HttpGet(this.bitbucketApi1RepositoryUrl + apiUrlPath);
+    public CloseableHttpResponse execute(final String apiQuery) throws IOException {
+        final HttpGet httpGet = new HttpGet(this.bitbucketApi1RepositoryUrl + apiQuery);
 
         if (this.basicAuthentication) {
             return this.client.execute(basicAuthHost, httpGet, basicAuthContext);

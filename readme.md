@@ -20,7 +20,8 @@ There are multiple ways you can use larmic-maven-plugins.
 
 Call
 
-    $ de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -DaccountName=$repositoryBitbucketAccount -DrepositorySlug=$bitbucketRepositorySlug
+    $ de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -Dbitbucket.accountName=$repositoryBitbucketAccount
+    -Dbitbucket.repositorySlug=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
 

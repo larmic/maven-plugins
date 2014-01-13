@@ -29,16 +29,6 @@ public class TodoCheckMojo extends AbstractMojo {
     public static final String TICKET_STATUS = "status";
 
     /**
-     * @parameter expression="${bitbucket.accountName}"
-     */
-    private String accountName;
-
-    /**
-     * @parameter expression="${bitbucket.accountName}"
-     */
-    private String repositorySlug;
-
-    /**
      * @parameter expression="${project.build.sourceDirectory}"
      */
     private File sourceDirectory;
@@ -47,6 +37,16 @@ public class TodoCheckMojo extends AbstractMojo {
      * @parameter expression="${project.build.testSourceDirectory}"
      */
     private File testSourceDirectory;
+
+    /**
+     * @parameter expression="${bitbucket.accountName}"
+     */
+    private String accountName;
+
+    /**
+     * @parameter expression="${bitbucket.repositorySlug}"
+     */
+    private String repositorySlug;
 
     /**
      * @parameter expression="${bitbucket.userName}"
@@ -213,6 +213,9 @@ public class TodoCheckMojo extends AbstractMojo {
         //CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
         //decoder.onMalformedInput(CodingErrorAction.IGNORE);
         //final BufferedReader bufferedReader = Files.newBufferedReader(file, decoder.charset());
+
+        // TODO use this call instead?
+        // List<String> lines = Files.readAllLines(file, Charset.defaultCharset());
 
         final InputStream in = Files.newInputStream(file);
         final CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
