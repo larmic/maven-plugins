@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>de.larmic.maven.plugins</groupId>
 		<artifactId>larmic-maven-plugin</artifactId>
-		<version>1.0-Aplha8</version>
+		<version>1.0-Aplha9-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>bitbucket</artifactId>
-  <version>1.0-Alpha8</version>
+  <version>1.0-Alpha9-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Bitbucket maven plugins</name>
 
