@@ -1,4 +1,4 @@
-package de.larmic.bitbucket;
+package de.larmic.maven.bitbucket;
 
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -21,8 +21,9 @@ import java.io.IOException;
  */
 public class BitbucketApiClient {
 
-    public static final String BITBUCKET_API_HOST = "api.bitbucket.org";
+    public static final String BITBUCKET_API_HOST = "api.maven.org";
     public static final String BITBUCKET_API_I_FORMAT = "https://%s/1.0/repositories/%s/%s/";
+    public static final int STATUS_CODE_OK = 200;
 
     private final CloseableHttpClient client;
     private final String bitbucketApi1RepositoryUrl;
@@ -55,7 +56,7 @@ public class BitbucketApiClient {
         final HttpGet httpGet = new HttpGet(this.bitbucketApi1RepositoryUrl + apiUrlPath);
 
         if (this.basicAuthentication) {
-          return this.client.execute(basicAuthHost, httpGet, basicAuthContext);
+            return this.client.execute(basicAuthHost, httpGet, basicAuthContext);
         }
 
         return this.client.execute(httpGet);

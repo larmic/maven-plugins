@@ -1,4 +1,4 @@
-package de.larmic.bitbucket;
+package de.larmic.maven.bitbucket;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.testng.Assert;

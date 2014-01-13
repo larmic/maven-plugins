@@ -1,9 +1,9 @@
-package de.larmic.bitbucket;
+package de.larmic.maven.bitbucket;
 
-// TODO no bitbucket ticket
-// TODO #0 not existing bitbucket ticket
-// TODO #1 open bitbucket ticket
-// TODO #2 closed bitbucket ticket
+// TODO no maven ticket
+// TODO #0 not existing maven ticket
+// TODO #1 open maven ticket
+// TODO #2 closed maven ticket
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -44,10 +44,10 @@ public class TodoCheckMojoTest {
 
         mojo.execute();
 
-        verify(logMock, times(2)).info(this.getClass().getSimpleName() + ".java Line: 3, Text: no bitbucket ticket");
-        verify(logMock, times(2)).error("[COULD NOT FIND TICKET] " + this.getClass().getSimpleName() + ".java Line: 4, Text: not existing bitbucket ticket");
-        verify(logMock, times(2)).info(this.getClass().getSimpleName() + ".java Line: 5, Text: open bitbucket ticket");
-        verify(logMock, times(2)).error("[TICKET IS RESOLVED] " + this.getClass().getSimpleName() + ".java Line: 6, Text: closed bitbucket ticket");
+        verify(logMock, times(2)).info(this.getClass().getSimpleName() + ".java Line: 3, Text: no maven ticket");
+        verify(logMock, times(2)).error("[COULD NOT FIND TICKET] " + this.getClass().getSimpleName() + ".java Line: 4, Text: not existing maven ticket");
+        verify(logMock, times(2)).info(this.getClass().getSimpleName() + ".java Line: 5, Text: open maven ticket");
+        verify(logMock, times(2)).error("[TICKET IS RESOLVED] " + this.getClass().getSimpleName() + ".java Line: 6, Text: closed maven ticket");
     }
 
     @Test

@@ -1,4 +1,4 @@
-package de.larmic.bitbucket;
+package de.larmic.maven.bitbucket;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

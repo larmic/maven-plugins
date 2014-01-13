@@ -1,5 +1,6 @@
-package de.larmic.bitbucket;
+package de.larmic.maven.bitbucket;
 
+import de.larmic.maven.bitbucket.TodoMatcher;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

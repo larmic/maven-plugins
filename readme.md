@@ -36,20 +36,23 @@ Add
 
 to your maven settings.xml and call
 
-    $ bitbucket:$pluginGoal -DaccountName=$repositoryBitbucketAccount -DrepositorySlug=$bitbucketRepositorySlug
+    $ bitbucket:$pluginGoal -Dbitbucket.userName=$repositoryBitbucketAccount -Dbitbucket.password=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
 
 ### Configuring account name and Repository slug in pom.xml
 
-You can set bitbucket repository account name and slug n your maven pom.xml
+You can set bitbucket repository account name and slug in your maven pom.xml
 
 ```xml
 <project>
     ...
     <properties>
-        <bitbucket:accountName>$repositoryBitbucketAccount</bitbucket:accountName>
-        <bitbucket:repositorySlug>$bitbucketRepositorySlug</bitbucket:repositorySlug>
+        <bitbucket.accountName>$repositoryBitbucketAccount</bitbucket.accountName>
+        <bitbucket.repositorySlug>$bitbucketRepositorySlug</bitbucket.repositorySlug>
+        <!-- user name and password is needed if repository needs an authentication -->
+        <bitbucket.userName>$userName</bitbucket.userName>
+        <bitbucket.password>$password</bitbucket.password>
     </properties>
 </project>
 ```

@@ -1,4 +1,4 @@
-package de.larmic.bitbucket;
+package de.larmic.maven.bitbucket;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.maven.plugin.AbstractMojo;
@@ -34,7 +34,7 @@ public class TodoCheckMojo extends AbstractMojo {
     private String accountName;
 
     /**
-     * @parameter expression="${bitbucket.repositorySlug}"
+     * @parameter expression="${bitbucket.accountName}"
      */
     private String repositorySlug;
 
@@ -48,14 +48,24 @@ public class TodoCheckMojo extends AbstractMojo {
      */
     private File testSourceDirectory;
 
+    /**
+     * @parameter expression="${bitbucket.userName}"
+     */
+    private String userName;
+
+    /**
+     * @parameter expression="${bitbucket.password}"
+     */
+    private String password;
+
     public void execute() throws MojoExecutionException {
 
         if (this.accountName == null) {
-            throw new MojoExecutionException("bitbucket account name is not set. Use -DaccountName=... or set property in pom.xml");
+            throw new MojoExecutionException("maven account name is not set. Use -Dbitbucket.accountName=... or set property in pom.xml");
         }
 
         if (this.repositorySlug == null) {
-            throw new MojoExecutionException("bitbucket repository slug is not set. Use -DrepositorySlug=... or set property in pom.xml");
+            throw new MojoExecutionException("maven repository slug is not set. Use -Dbitbucket.repositorySlug=... or set property in pom.xml");
         }
 
         getLog().info("");
@@ -136,12 +146,12 @@ public class TodoCheckMojo extends AbstractMojo {
 
     private void logTodo(final String fileName, final TodoMatcher matcher, final int lineNumber) throws IOException {
         if (matcher.getTicketNumber() != null) {
-            final BitbucketApiClient bitbucketApiClient = new BitbucketApiClient(this.accountName, this.repositorySlug);
+            final BitbucketApiClient bitbucketApiClient = createBitbucketApiClient();
 
             try {
                 final CloseableHttpResponse response = bitbucketApiClient.execute("issues/" + matcher.getTicketNumber());
 
-                if (response.getStatusLine().getStatusCode() != 200) {
+                if (response.getStatusLine().getStatusCode() != BitbucketApiClient.STATUS_CODE_OK) {
                     getLog().error(createTodoLog(fileName, lineNumber, matcher.getTodoDescription(), "Could not find ticket"));
                 } else {
                     if (isTicketClosed(response)) {
@@ -156,6 +166,14 @@ public class TodoCheckMojo extends AbstractMojo {
         } else {
             getLog().info(createTodoLog(fileName, lineNumber, matcher.getTodoDescription()));
         }
+    }
+
+    private BitbucketApiClient createBitbucketApiClient() {
+        if (this.userName == null && !"".equals(this.userName)) {
+            return new BitbucketApiClient(this.accountName, this.repositorySlug);
+        }
+
+        return new BitbucketApiClient(this.accountName, this.repositorySlug, this.userName, this.password);
     }
 
     private String createTodoLog(final String fileName, final int lineNumber, final String todoText) {
