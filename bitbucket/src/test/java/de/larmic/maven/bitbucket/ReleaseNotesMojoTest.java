@@ -1,6 +1,7 @@
 package de.larmic.maven.bitbucket;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.io.File;
 
@@ -16,7 +17,7 @@ public class ReleaseNotesMojoTest {
         mojo = new ReleaseNotesMojo();
     }
 
-    //@Test
+    @Test(enabled = false)
     public void testExecute() throws Exception {
         ReflectionUtils.setField(mojo, "targetDirectory", new File("./bitbucket/target"));
         ReflectionUtils.setField(mojo, "accountName", "larmicBB");
