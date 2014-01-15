@@ -7,9 +7,19 @@ message if ticket is already resolved.
 
 ## Install
 
-Actually no maven repository is used so you have to install maven plugin by yourself.
+larmic-maven-plugins is accessible by maven central repository. Add following dependency to use it
 
-* Checkout the source: `git clone git@bitbucket.org:larmicBB/larmic-maven-plugins.git` and install it yourself.
+```xml
+<dependency>
+    <groupId>de.larmic</groupId>
+    <artifactId>larmic-maven-bitbucket-plugin</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+Or you can clone git repository and install maven plugin by yourself.
+
+* Checkout the source: `git clone git@bitbucket.org:larmicBB/larmic-maven-plugins.git`.
 * Use maven to install it `maven install`
 
 ## Getting started
@@ -20,8 +30,8 @@ There are multiple ways you can use larmic-maven-plugins.
 
 Call
 
-    $ mvn de.larmic.maven.plugins:bitbucket:$pluginVersion:$pluginGoal -Dbitbucket.accountName=$repositoryBitbucketAccount
-    -Dbitbucket.repositorySlug=$bitbucketRepositorySlug
+    $ mvn de.larmic:larmic-maven-bitbucket-plugin:$pluginVersion:$pluginGoal -Dbitbucket.accountName=$repositoryBitbucketAccount -Dbitbucket
+    .repositorySlug=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
 
@@ -31,7 +41,7 @@ Add
 
 ```xml
 <pluginGroups>
-    <pluginGroup>de.larmic.maven.plugins</pluginGroup>
+    <pluginGroup>de.larmic</pluginGroup>
 </pluginGroups>
 ```
 
@@ -73,7 +83,7 @@ Update settings.xml
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
     ...
     <pluginGroups>
-        <pluginGroup>de.larmic.maven.plugins</pluginGroup>
+        <pluginGroup>de.larmic</pluginGroup>
     </pluginGroups>
 </settings>
 ```
