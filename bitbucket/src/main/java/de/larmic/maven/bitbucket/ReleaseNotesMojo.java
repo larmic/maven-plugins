@@ -24,8 +24,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @goal createReleaseNotes
@@ -68,7 +67,7 @@ public class ReleaseNotesMojo extends AbstractMojo {
         final Path xmlFile = new File(targetDirectory.getAbsolutePath() + "/releasenotes.xml").toPath();
 
         try {
-            final List<JSONObject> issues = findIssues();
+            final Map<String, List<JSONObject>> issues = findIssues();
 
             final String content = this.convertDocumentToString(this.createReleaseNotesDocument(issues));
 
@@ -78,8 +77,8 @@ public class ReleaseNotesMojo extends AbstractMojo {
         }
     }
 
-    private List<JSONObject> findIssues() throws IOException {
-        final ArrayList<JSONObject> issues = new ArrayList<>();
+    private Map<String, List<JSONObject>> findIssues() throws IOException {
+        final Map<String, List<JSONObject>> issues = new HashMap<>();
 
         final BitbucketApiClient bitbucketApiClient = createBitbucketApiClient();
 
@@ -92,7 +91,19 @@ public class ReleaseNotesMojo extends AbstractMojo {
                 for (int issueNumber = 0; issueNumber <= count / MAX_ISSUE_LIMIT; issueNumber += MAX_ISSUE_LIMIT) {
                     final int startIssue = issueNumber;
                     final CloseableHttpResponse r = bitbucketApiClient.execute(createApiQuery(MAX_ISSUE_LIMIT, startIssue));
-                    issues.addAll((JSONArray) createJSON(r).get("issues"));
+
+                    final ArrayList<JSONObject> part = (JSONArray) createJSON(r).get("issues");
+
+                    for (final JSONObject issue : part) {
+                        final JSONObject metadata = (JSONObject) issue.get("metadata");
+                        final String version = metadata.get("version") != null ? (String) metadata.get("version") : "";
+
+                        if (issues.get(version) == null) {
+                            issues.put(version, new ArrayList<JSONObject>());
+                        }
+
+                        issues.get(version).add(issue);
+                    }
                 }
             }
 
@@ -125,7 +136,7 @@ public class ReleaseNotesMojo extends AbstractMojo {
         return new BitbucketApiClient(this.accountName, this.repositorySlug, this.userName, this.password);
     }
 
-    private Document createReleaseNotesDocument(List<JSONObject> issues) throws MojoExecutionException {
+    private Document createReleaseNotesDocument(final Map<String, List<JSONObject>> issues) throws MojoExecutionException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -135,26 +146,30 @@ public class ReleaseNotesMojo extends AbstractMojo {
 
             this.appendTextNode(document, rootElement, "title", this.title);
 
-            // check json -> metadata -> version (null or string)
+            final SortedSet<String> sortedKeys = sortKeys(issues.keySet());
 
-            for (final JSONObject issue : issues) {
-                final JSONObject metadata = (JSONObject) issue.get("metadata");
-                final String version = (String) metadata.get("version");
+            for (final String sortedKey : sortedKeys) {
+                for (final JSONObject issue : issues.get(sortedKey)) {
+                    final JSONObject metadata = (JSONObject) issue.get("metadata");
+                    final String version = (String) metadata.get("version");
 
-                final Element release = document.createElement("release");
-                rootElement.appendChild(release);
+                    final Element release = document.createElement("release");
+                    rootElement.appendChild(release);
 
-                if (version != null) {
-                    final Attr attr = document.createAttribute("version");
-                    attr.setValue(version);
-                    release.setAttributeNode(attr);
+                    if (version != null) {
+                        final Attr attr = document.createAttribute("version");
+                        attr.setValue(version);
+                        release.setAttributeNode(attr);
+                    }
+
+                    this.appendTextNode(document, release, "title", (String) issue.get("title"));
+                    this.appendTextNode(document, release, "ticket", issue.get("local_id").toString());
+                    this.appendTextNode(document, release, "priority", (String) issue.get("priority"));
+                    this.appendTextNode(document, release, "kind", (String) metadata.get("kind"));
+                    this.appendTextNode(document, release, "milestone", (String) metadata.get("milestone"));
+                    this.appendTextNode(document, release, "component", (String) metadata.get("component"));
                 }
-
-                this.appendTextNode(document, release, "title", (String) issue.get("title"));
-                this.appendTextNode(document, release, "priority", (String) issue.get("priority"));
-                this.appendTextNode(document, release, "kind", (String) metadata.get("kind"));
             }
-
 
             return document;
         } catch (ParserConfigurationException e) {
@@ -162,9 +177,14 @@ public class ReleaseNotesMojo extends AbstractMojo {
         }
     }
 
+    private SortedSet<String> sortKeys(final Set<String> keys) {
+        final SortedSet<String> sortedKeys = new TreeSet<>(keys);
+        return sortedKeys;
+    }
+
     private void appendTextNode(final Document document, final Element parent, final String tagName, final String data) {
         final Element element = document.createElement(tagName);
-        element.appendChild(document.createTextNode(data));
+        element.appendChild(document.createTextNode(data != null ? data : ""));
         parent.appendChild(element);
     }
 
