@@ -67,6 +67,8 @@ public class ReleaseNotesMojo extends AbstractMojo {
         final Path xmlFile = new File(targetDirectory.getAbsolutePath() + "/releasenotes.xml").toPath();
 
         try {
+            Files.delete(xmlFile);
+            Files.createFile(xmlFile);
             final Map<String, List<JSONObject>> issues = findIssues();
 
             final String content = this.convertDocumentToString(this.createReleaseNotesDocument(issues));
@@ -146,28 +148,27 @@ public class ReleaseNotesMojo extends AbstractMojo {
 
             this.appendTextNode(document, rootElement, "title", this.title);
 
-            final SortedSet<String> sortedKeys = sortKeys(issues.keySet());
+            final SortedSet<String> versions = sortKeys(issues.keySet());
 
-            for (final String sortedKey : sortedKeys) {
-                for (final JSONObject issue : issues.get(sortedKey)) {
+            for (final String version : versions) {
+                final Element release = document.createElement("release");
+                rootElement.appendChild(release);
+
+                appendElementAttribute(document, release, "version", !"".equals(version) ? version : "no version");
+
+                for (final JSONObject issue : issues.get(version)) {
                     final JSONObject metadata = (JSONObject) issue.get("metadata");
-                    final String version = (String) metadata.get("version");
 
-                    final Element release = document.createElement("release");
-                    rootElement.appendChild(release);
+                    final Element ticket = document.createElement("ticket");
+                    release.appendChild(ticket);
 
-                    if (version != null) {
-                        final Attr attr = document.createAttribute("version");
-                        attr.setValue(version);
-                        release.setAttributeNode(attr);
-                    }
+                    appendElementAttribute(document, ticket, "id", issue.get("local_id").toString());
 
-                    this.appendTextNode(document, release, "title", (String) issue.get("title"));
-                    this.appendTextNode(document, release, "ticket", issue.get("local_id").toString());
-                    this.appendTextNode(document, release, "priority", (String) issue.get("priority"));
-                    this.appendTextNode(document, release, "kind", (String) metadata.get("kind"));
-                    this.appendTextNode(document, release, "milestone", (String) metadata.get("milestone"));
-                    this.appendTextNode(document, release, "component", (String) metadata.get("component"));
+                    this.appendTextNode(document, ticket, "title", (String) issue.get("title"));
+                    this.appendTextNode(document, ticket, "priority", (String) issue.get("priority"));
+                    this.appendTextNode(document, ticket, "kind", (String) metadata.get("kind"));
+                    this.appendTextNode(document, ticket, "milestone", (String) metadata.get("milestone"));
+                    this.appendTextNode(document, ticket, "component", (String) metadata.get("component"));
                 }
             }
 
@@ -177,9 +178,10 @@ public class ReleaseNotesMojo extends AbstractMojo {
         }
     }
 
-    private SortedSet<String> sortKeys(final Set<String> keys) {
-        final SortedSet<String> sortedKeys = new TreeSet<>(keys);
-        return sortedKeys;
+    private void appendElementAttribute(final Document document, final Element parent, final String attributeName, final String data) {
+        final Attr attr = document.createAttribute(attributeName);
+        attr.setValue(data);
+        parent.setAttributeNode(attr);
     }
 
     private void appendTextNode(final Document document, final Element parent, final String tagName, final String data) {
@@ -187,6 +189,24 @@ public class ReleaseNotesMojo extends AbstractMojo {
         element.appendChild(document.createTextNode(data != null ? data : ""));
         parent.appendChild(element);
     }
+
+
+    private SortedSet<String> sortKeys(final Set<String> keys) {
+        final Comparator<String> stringComparator = new Comparator<String>() {
+            @Override
+            public int compare(final String o1, final String o2) {
+                if ("".equals(o1) && !"".equals(o2) || "".equals(o2) && !"".equals(o1)) {
+                    return -1;
+                }
+
+                return o1.compareTo(o2);
+            }
+        };
+        final SortedSet<String> sortedKeys = new TreeSet<>(stringComparator);
+        sortedKeys.addAll(keys);
+        return sortedKeys;
+    }
+
 
     private String convertDocumentToString(final Document doc) throws MojoExecutionException {
         try {
