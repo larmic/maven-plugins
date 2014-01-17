@@ -1,5 +1,8 @@
 package de.larmic.maven.bitbucket;
 
+import de.larmic.maven.bitbucket.dom.DocumentAppender;
+import de.larmic.maven.bitbucket.dom.DocumentConverter;
+import de.larmic.maven.bitbucket.dom.XmlDocumentConverter;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -8,19 +11,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import javax.xml.transform.TransformerException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -32,6 +33,11 @@ import java.util.*;
 public class ReleaseNotesMojo extends AbstractMojo {
 
     public static final int MAX_ISSUE_LIMIT = 50;
+
+    private final DocumentAppender documentAppender = new DocumentAppender();
+
+    private final DocumentConverter xmlDocumentConverter = new XmlDocumentConverter();
+
     /**
      * @parameter expression="${project.build.outputDirectory}"
      */
@@ -71,11 +77,13 @@ public class ReleaseNotesMojo extends AbstractMojo {
             Files.createFile(xmlFile);
             final Map<String, List<JSONObject>> issues = findIssues();
 
-            final String content = this.convertDocumentToString(this.createReleaseNotesDocument(issues));
+            final String content = this.xmlDocumentConverter.convertDocumentToString(this.createReleaseNotesDocument(issues));
 
             Files.write(xmlFile, content.getBytes(), StandardOpenOption.CREATE);
         } catch (IOException e) {
             throw new MojoExecutionException("Could not create release notes file " + xmlFile.getFileName(), e);
+        } catch (TransformerException e) {
+            throw new MojoExecutionException("Could not transform document to xml", e);
         }
     }
 
@@ -139,14 +147,14 @@ public class ReleaseNotesMojo extends AbstractMojo {
     }
 
     private Document createReleaseNotesDocument(final Map<String, List<JSONObject>> issues) throws MojoExecutionException {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             final Document document = dBuilder.newDocument();
             final Element rootElement = document.createElement("releasenotes");
             document.appendChild(rootElement);
 
-            this.appendTextNode(document, rootElement, "title", this.title);
+            this.documentAppender.appendTextNode(document, rootElement, "title", this.title);
 
             final SortedSet<String> versions = sortKeys(issues.keySet());
 
@@ -154,7 +162,7 @@ public class ReleaseNotesMojo extends AbstractMojo {
                 final Element release = document.createElement("release");
                 rootElement.appendChild(release);
 
-                appendElementAttribute(document, release, "version", !"".equals(version) ? version : "no version");
+                this.documentAppender.appendElementAttribute(document, release, "version", !"".equals(version) ? version : "no version");
 
                 for (final JSONObject issue : issues.get(version)) {
                     final JSONObject metadata = (JSONObject) issue.get("metadata");
@@ -162,13 +170,13 @@ public class ReleaseNotesMojo extends AbstractMojo {
                     final Element ticket = document.createElement("ticket");
                     release.appendChild(ticket);
 
-                    appendElementAttribute(document, ticket, "id", issue.get("local_id").toString());
+                    this.documentAppender.appendElementAttribute(document, ticket, "id", issue.get("local_id").toString());
 
-                    this.appendTextNode(document, ticket, "title", (String) issue.get("title"));
-                    this.appendTextNode(document, ticket, "priority", (String) issue.get("priority"));
-                    this.appendTextNode(document, ticket, "kind", (String) metadata.get("kind"));
-                    this.appendTextNode(document, ticket, "milestone", (String) metadata.get("milestone"));
-                    this.appendTextNode(document, ticket, "component", (String) metadata.get("component"));
+                    this.documentAppender.appendTextNode(document, ticket, "title", (String) issue.get("title"));
+                    this.documentAppender.appendTextNode(document, ticket, "priority", (String) issue.get("priority"));
+                    this.documentAppender.appendTextNode(document, ticket, "kind", (String) metadata.get("kind"));
+                    this.documentAppender.appendTextNode(document, ticket, "milestone", (String) metadata.get("milestone"));
+                    this.documentAppender.appendTextNode(document, ticket, "component", (String) metadata.get("component"));
                 }
             }
 
@@ -176,18 +184,6 @@ public class ReleaseNotesMojo extends AbstractMojo {
         } catch (ParserConfigurationException e) {
             throw new MojoExecutionException("Could not create document", e);
         }
-    }
-
-    private void appendElementAttribute(final Document document, final Element parent, final String attributeName, final String data) {
-        final Attr attr = document.createAttribute(attributeName);
-        attr.setValue(data);
-        parent.setAttributeNode(attr);
-    }
-
-    private void appendTextNode(final Document document, final Element parent, final String tagName, final String data) {
-        final Element element = document.createElement(tagName);
-        element.appendChild(document.createTextNode(data != null ? data : ""));
-        parent.appendChild(element);
     }
 
 
@@ -205,24 +201,5 @@ public class ReleaseNotesMojo extends AbstractMojo {
         final SortedSet<String> sortedKeys = new TreeSet<>(stringComparator);
         sortedKeys.addAll(keys);
         return sortedKeys;
-    }
-
-
-    private String convertDocumentToString(final Document doc) throws MojoExecutionException {
-        try {
-            final StringWriter sw = new StringWriter();
-            final TransformerFactory tf = TransformerFactory.newInstance();
-            final Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
-            transformer.transform(new DOMSource(doc), new StreamResult(sw));
-            return sw.toString();
-        } catch (Exception ex) {
-            throw new MojoExecutionException("Error converting to String", ex);
-        }
     }
 }

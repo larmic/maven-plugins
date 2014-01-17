@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+  <title>hi this is a title</title>
+  <release version="1.0">
+    <ticket id="13"/>
+    <ticket id="14"/>
+  </release>
+  <release version="2.0">
+    <ticket id="7"/>
+  </release>
+</root>
