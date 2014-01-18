@@ -51,14 +51,24 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
      */
     private boolean ignoreTicketWithNoVersion;
 
+    /**
+     * @parameter expression="${releasenotes.relativePath}" default-value="/src/main/webapp/"
+     */
+    private String relativePath;
+
     @Override
     public void executeMojo() throws MojoExecutionException {
-        final Path xmlFile = new File(sourceDirectory.getAbsolutePath() + "/releasenotes.xml").toPath();
+        final Path xmlFile = new File(this.sourceDirectory.getAbsolutePath() + this.relativePath + "/releasenotes.xml").toPath();
 
         try {
             if (Files.exists(xmlFile)) {
                 Files.delete(xmlFile);
             }
+
+            if (!Files.exists(xmlFile.getParent())) {
+                Files.createDirectories(xmlFile.getParent());
+            }
+
             Files.createFile(xmlFile);
             final Map<String, List<JSONObject>> issues = findIssues();
 

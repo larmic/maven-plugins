@@ -27,13 +27,15 @@ public class ReleaseNotesMojoTest {
         ReflectionUtils.setField(mojo, "repositorySlug", "larmic-maven-plugins");
         ReflectionUtils.setField(mojo, "title", "testtitle");
         ReflectionUtils.setField(mojo, "ignoreTicketWithNoVersion", true);
+        ReflectionUtils.setField(mojo, "relativePath", "/bitbucket");
 
         this.mojo.execute();
 
-        final File file = new File("releaseNotes.xml");
+        final File file = new File("bitbucket/releaseNotes.xml");
 
         Assert.assertEquals(Files.readFile(file), new FileReader("projectReleaseNotes.xml").getTestFileContent());
 
-        file.delete();
+        java.nio.file.Files.delete(file.toPath());
+        java.nio.file.Files.delete(file.toPath().getParent());
     }
 }
