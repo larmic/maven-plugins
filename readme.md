@@ -73,6 +73,19 @@ You can set bitbucket repository account name and slug in your maven pom.xml
 Now you can call maven plugin without explicit indicating property
 
     $ mvn bitbucket:$pluginGoal
+    
+## Parameters
+
+### Plugin checkTodo
+
+* **sourceDirectory** All files in source directory will be scanned. Default is `${project.build.sourceDirectory}`. Could be empty.
+* **testSourceDirectory** All files in test source directory will be scanned. Default is `${project.build.testSourceDirectory}`. Could be empty.
+
+### Plugin createReleaseNotes
+
+* **title** Title is part of the content of the created file. Default is `Release notes ${project.name}`.
+* **ignoreTicketWithNoVersion** Ignores bitbucket tickets with no version is set when value is `true`. Default is `false`.
+* **relativePath** Project relative path the files are created in. Default is `/src/main/webapp/`.
 
 ## Examples
 
