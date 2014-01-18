@@ -66,6 +66,10 @@ public class BitbucketApiClient {
         this.client.close();
     }
 
+    public String getBitbucketApi1RepositoryUrl() {
+        return bitbucketApi1RepositoryUrl;
+    }
+
     private HttpClientContext createBasicAuthenticationContext(final HttpHost basicAuthHost, final String userName, final String password) {
         final UsernamePasswordCredentials basicCredentials = new UsernamePasswordCredentials(userName, password);
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();

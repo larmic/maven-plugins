@@ -1,7 +1,6 @@
 package de.larmic.maven.bitbucket;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,7 +22,7 @@ import java.util.TreeMap;
 /**
  * @goal checkTodo
  */
-public class TodoCheckMojo extends AbstractMojo {
+public class TodoCheckMojo extends AbstractBitbucketMojo {
 
     public static final String TICKET_STATUS_RESOLVED = "resolved";
     public static final String TICKET_STATUS = "status";
@@ -38,36 +37,7 @@ public class TodoCheckMojo extends AbstractMojo {
      */
     private File testSourceDirectory;
 
-    /**
-     * @parameter expression="${bitbucket.accountName}"
-     */
-    private String accountName;
-
-    /**
-     * @parameter expression="${bitbucket.repositorySlug}"
-     */
-    private String repositorySlug;
-
-    /**
-     * @parameter expression="${bitbucket.userName}"
-     */
-    private String userName;
-
-    /**
-     * @parameter expression="${bitbucket.password}"
-     */
-    private String password;
-
-    public void execute() throws MojoExecutionException {
-
-        if (this.accountName == null) {
-            throw new MojoExecutionException("maven account name is not set. Use -Dbitbucket.accountName=... or set property in pom.xml");
-        }
-
-        if (this.repositorySlug == null) {
-            throw new MojoExecutionException("maven repository slug is not set. Use -Dbitbucket.repositorySlug=... or set property in pom.xml");
-        }
-
+    public void executeMojo() throws MojoExecutionException {
         getLog().info("");
 
         int numberOfTodos = 0;
@@ -166,14 +136,6 @@ public class TodoCheckMojo extends AbstractMojo {
         } else {
             getLog().info(createTodoLog(fileName, lineNumber, matcher.getTodoDescription()));
         }
-    }
-
-    private BitbucketApiClient createBitbucketApiClient() {
-        if (this.userName == null && !"".equals(this.userName)) {
-            return new BitbucketApiClient(this.accountName, this.repositorySlug);
-        }
-
-        return new BitbucketApiClient(this.accountName, this.repositorySlug, this.userName, this.password);
     }
 
     private String createTodoLog(final String fileName, final int lineNumber, final String todoText) {

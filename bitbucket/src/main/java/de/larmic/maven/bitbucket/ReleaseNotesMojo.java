@@ -4,9 +4,7 @@ import de.larmic.maven.bitbucket.dom.DocumentAppender;
 import de.larmic.maven.bitbucket.dom.DocumentConverter;
 import de.larmic.maven.bitbucket.dom.XmlDocumentConverter;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,7 +28,7 @@ import java.util.*;
 /**
  * @goal createReleaseNotes
  */
-public class ReleaseNotesMojo extends AbstractMojo {
+public class ReleaseNotesMojo extends AbstractBitbucketMojo {
 
     public static final int MAX_ISSUE_LIMIT = 50;
 
@@ -39,47 +37,36 @@ public class ReleaseNotesMojo extends AbstractMojo {
     private final DocumentConverter xmlDocumentConverter = new XmlDocumentConverter();
 
     /**
-     * @parameter expression="${project.build.outputDirectory}"
+     * @parameter expression="${project.build.sourceDirectory}"
      */
-    private File targetDirectory;
-
-    /**
-     * @parameter expression="${bitbucket.accountName}"
-     */
-    private String accountName;
-
-    /**
-     * @parameter expression="${bitbucket.accountName}"
-     */
-    private String repositorySlug;
-
-    /**
-     * @parameter expression="${bitbucket.userName}"
-     */
-    private String userName;
-
-    /**
-     * @parameter expression="${bitbucket.password}"
-     */
-    private String password;
+    private File sourceDirectory;
 
     /**
      * @parameter expression="${releasenotes.title}" default-value="Release notes ${project.name}"
      */
     private String title;
 
+    /**
+     * @parameter expression="${releasenotes.ignoreTicketWithNoVersion}" default-value="false"
+     */
+    private boolean ignoreTicketWithNoVersion;
+
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        final Path xmlFile = new File(targetDirectory.getAbsolutePath() + "/releasenotes.xml").toPath();
+    public void executeMojo() throws MojoExecutionException {
+        final Path xmlFile = new File(sourceDirectory.getAbsolutePath() + "/releasenotes.xml").toPath();
 
         try {
-            Files.delete(xmlFile);
+            if (Files.exists(xmlFile)) {
+                Files.delete(xmlFile);
+            }
             Files.createFile(xmlFile);
             final Map<String, List<JSONObject>> issues = findIssues();
 
             final String content = this.xmlDocumentConverter.convertDocumentToString(this.createReleaseNotesDocument(issues));
 
             Files.write(xmlFile, content.getBytes(), StandardOpenOption.CREATE);
+
+            getLog().info(xmlFile.toUri() + " created.");
         } catch (IOException e) {
             throw new MojoExecutionException("Could not create release notes file " + xmlFile.getFileName(), e);
         } catch (TransformerException e) {
@@ -93,26 +80,34 @@ public class ReleaseNotesMojo extends AbstractMojo {
         final BitbucketApiClient bitbucketApiClient = createBitbucketApiClient();
 
         try {
-            final CloseableHttpResponse response = bitbucketApiClient.execute(createApiQuery(1, 0));
+            final String apiQuery = createApiQuery(1, 0);
+            final CloseableHttpResponse response = bitbucketApiClient.execute(apiQuery);
 
-            final Integer count = ((Long) this.createJSON(response).get("count")).intValue();
+            if (response.getStatusLine().getStatusCode() == 404) {
+                getLog().error("404 not found " + bitbucketApiClient.getBitbucketApi1RepositoryUrl() + apiQuery);
+            } else {
 
-            if (count > 0) {
-                for (int issueNumber = 0; issueNumber <= count / MAX_ISSUE_LIMIT; issueNumber += MAX_ISSUE_LIMIT) {
-                    final int startIssue = issueNumber;
-                    final CloseableHttpResponse r = bitbucketApiClient.execute(createApiQuery(MAX_ISSUE_LIMIT, startIssue));
+                final Integer count = ((Long) this.createJSON(response).get("count")).intValue();
 
-                    final ArrayList<JSONObject> part = (JSONArray) createJSON(r).get("issues");
+                if (count > 0) {
+                    for (int issueNumber = 0; issueNumber <= count / MAX_ISSUE_LIMIT; issueNumber += MAX_ISSUE_LIMIT) {
+                        final int startIssue = issueNumber;
+                        final CloseableHttpResponse r = bitbucketApiClient.execute(createApiQuery(MAX_ISSUE_LIMIT, startIssue));
 
-                    for (final JSONObject issue : part) {
-                        final JSONObject metadata = (JSONObject) issue.get("metadata");
-                        final String version = metadata.get("version") != null ? (String) metadata.get("version") : "";
+                        final ArrayList<JSONObject> part = (JSONArray) createJSON(r).get("issues");
 
-                        if (issues.get(version) == null) {
-                            issues.put(version, new ArrayList<JSONObject>());
+                        for (final JSONObject issue : part) {
+                            final JSONObject metadata = (JSONObject) issue.get("metadata");
+                            final String version = metadata.get("version") != null ? (String) metadata.get("version") : "";
+
+                            if (!"".equals(version) || !ignoreTicketWithNoVersion) {
+                                if (issues.get(version) == null) {
+                                    issues.put(version, new ArrayList<JSONObject>());
+                                }
+
+                                issues.get(version).add(issue);
+                            }
                         }
-
-                        issues.get(version).add(issue);
                     }
                 }
             }
@@ -136,14 +131,6 @@ public class ReleaseNotesMojo extends AbstractMojo {
         } catch (ParseException e) {
             throw new IOException("Could not parse input stream", e);
         }
-    }
-
-    private BitbucketApiClient createBitbucketApiClient() {
-        if (this.userName == null && !"".equals(this.userName)) {
-            return new BitbucketApiClient(this.accountName, this.repositorySlug);
-        }
-
-        return new BitbucketApiClient(this.accountName, this.repositorySlug, this.userName, this.password);
     }
 
     private Document createReleaseNotesDocument(final Map<String, List<JSONObject>> issues) throws MojoExecutionException {

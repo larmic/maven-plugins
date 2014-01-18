@@ -6,10 +6,6 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * Created by larmic on 18.01.14.
@@ -21,10 +17,7 @@ public class DemoDom {
 
 
     public DemoDom() {
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        final InputStream stream = loader.getResourceAsStream("demoDom.xml");
-
-        this.testFileContent = getStringFromInputStream(stream);
+        this.testFileContent = new FileReader("demoDom.xml").getTestFileContent();
     }
 
     public Document createDemoDocument() throws ParserConfigurationException {
@@ -65,32 +58,5 @@ public class DemoDom {
         return testFileContent;
     }
 
-    private static String getStringFromInputStream(final InputStream is) {
-        final StringBuilder sb = new StringBuilder();
-
-        BufferedReader br = null;
-        String fileContent;
-
-        try {
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((fileContent = br.readLine()) != null) {
-                sb.append(fileContent);
-                sb.append("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return sb.toString();
-
-    }
 
 }

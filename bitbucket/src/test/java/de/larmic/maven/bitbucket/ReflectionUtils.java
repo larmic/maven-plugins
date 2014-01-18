@@ -9,7 +9,12 @@ public class ReflectionUtils {
 
     public static final void setField(final Object object, final String propertyName, final Object value) throws NoSuchFieldException,
             IllegalAccessException {
-        final Field field = object.getClass().getDeclaredField(propertyName);
+        Field field;
+        try {
+            field = object.getClass().getDeclaredField(propertyName);
+        } catch (NoSuchFieldException e) {
+            field = object.getClass().getSuperclass().getDeclaredField(propertyName);
+        }
         field.setAccessible(true);
         field.set(object, value);
     }
