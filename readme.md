@@ -104,7 +104,7 @@ Update pom.xml
 </project>
 ```
 
-Call bitbucket checkTodo plugin
+### Call bitbucket checkTodo plugin
 
     $ mvn bitbucket:checkTodo
     [INFO] Scanning for projects...
@@ -137,3 +137,55 @@ Call bitbucket checkTodo plugin
     [INFO] Final Memory: 12M/245M
     [INFO] ------------------------------------------------------------------------
     $
+    
+### Call bitbucket createReleaseNotes plugin
+
+    $ mvn bitbucket:createReleaseNotes
+    
+will create 
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<releasenotes>
+  <title>testtitle</title>
+  <release version="Release 1">
+    <ticket id="7">
+      <title>Test release note ticket 1 (release 1)</title>
+      <priority>major</priority>
+      <kind>proposal</kind>
+      <milestone/>
+      <component/>
+    </ticket>
+    <ticket id="8">
+      <title>Test release note ticket 2 (release 1)</title>
+      <priority>major</priority>
+      <kind>bug</kind>
+      <milestone/>
+      <component/>
+    </ticket>
+    <ticket id="10">
+      <title>Test release note ticket 3 (release 1)</title>
+      <priority>major</priority>
+      <kind>bug</kind>
+      <milestone/>
+      <component/>
+    </ticket>
+  </release>
+  <release version="Release 2">
+    <ticket id="9">
+      <title>Test release note ticket 1 (release 2)</title>
+      <priority>blocker</priority>
+      <kind>task</kind>
+      <milestone/>
+      <component/>
+    </ticket>
+    <ticket id="11">
+      <title>Test release note ticket 2 (release 2)</title>
+      <priority>trivial</priority>
+      <kind>enhancement</kind>
+      <milestone/>
+      <component/>
+    </ticket>
+  </release>
+</releasenotes>
+```
