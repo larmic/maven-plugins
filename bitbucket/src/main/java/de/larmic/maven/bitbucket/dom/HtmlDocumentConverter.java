@@ -133,7 +133,7 @@ public class HtmlDocumentConverter implements DocumentConverter {
                 }
 
                 this.appendLine(html, "                <li>Autor: " + author + "</li>");
-                this.appendLine(html, "                <li>Priorität: " + priority + "</li>");
+                this.appendLine(html, "                <li>Prioritaet: " + priority + "</li>");
                 this.appendLine(html, "                <li>Art: " + kind + "</li>");
 
                 this.appendLine(html, "              </ul>");
