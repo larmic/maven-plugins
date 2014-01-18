@@ -198,7 +198,7 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
                     return -1;
                 }
 
-                return o1.compareTo(o2);
+                return o2.compareTo(o1);
             }
         };
         final SortedSet<String> sortedKeys = new TreeSet<>(stringComparator);
