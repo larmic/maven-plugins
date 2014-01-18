@@ -4,18 +4,20 @@
   <release version="Release 1">
     <ticket id="7">
       <title>Test release note ticket 1 (release 1)</title>
+      <author>larmic</author>
       <priority>major</priority>
       <kind>proposal</kind>
+      <author/>
     </ticket>
     <ticket id="8">
       <title>Test release note ticket 2 (release 1)</title>
       <priority>major</priority>
-      <kind>bug</kind>
+      <kind/>
     </ticket>
     <ticket id="10">
       <title>Test release note ticket 3 (release 1)</title>
       <priority>major</priority>
-      <kind>proposal</kind>
+      <kind>-</kind>
     </ticket>
   </release>
   <release version="Release 2">
@@ -23,6 +25,11 @@
       <title>Test release note ticket 1 (release 2)</title>
       <priority>blocker</priority>
       <kind>task</kind>
+    </ticket>
+    <ticket id="11">
+      <title>Test release note ticket 2 (release 2)</title>
+      <priority>trivial</priority>
+      <kind>enhancement</kind>
     </ticket>
   </release>
 </root>
