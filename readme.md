@@ -15,7 +15,7 @@ larmic-maven-plugins is accessible by maven central repository. Add following de
 <dependency>
     <groupId>de.larmic</groupId>
     <artifactId>larmic-maven-bitbucket-plugin</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
