@@ -1,6 +1,7 @@
 package de.larmic.maven.bitbucket.dom;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
 
@@ -8,6 +9,7 @@ import javax.xml.transform.TransformerException;
  * Created by larmic on 18.01.14.
  */
 public class HtmlDocumentConverter implements DocumentConverter {
+
     @Override
     public String convertDocumentToString(final Document doc) throws TransformerException {
         final StringBuilder html = new StringBuilder();
@@ -76,11 +78,13 @@ public class HtmlDocumentConverter implements DocumentConverter {
     private void convertHtmlBody(final Document doc, final StringBuilder html) {
         this.appendLine(html, "<body>");
         this.appendLine(html, "  <header role=\"banner\">");
-        this.appendLine(html, "    <h1>Release notes</h1>");
+        this.appendLine(html, "    <h1>" + doc.getFirstChild().getChildNodes().item(0).getFirstChild().getNodeValue() + "</h1>");
         this.appendLine(html, "  </header>");
         this.appendLine(html, "  <div role=\"main\">");
         this.appendLine(html, "    <div id=\"content\">");
-        this.appendLine(html, "");
+
+        this.convertHtmlContent(doc, html);
+
         this.appendLine(html, "    </div>");
         this.appendLine(html, "  </div>");
         this.appendLine(html, "  <footer role=\"contentinfo\">");
@@ -89,6 +93,63 @@ public class HtmlDocumentConverter implements DocumentConverter {
         this.appendLine(html, "    </section>");
         this.appendLine(html, "  </footer>");
         this.appendLine(html, "</body>");
+    }
+
+    private void convertHtmlContent(final Document doc, final StringBuilder html) {
+        this.appendLine(html, "      <ul>");
+
+        for (int release = 1; release < doc.getFirstChild().getChildNodes().getLength(); release++) {
+            final Node releaseNode = doc.getFirstChild().getChildNodes().item(release);
+
+            this.appendLine(html, "        <li>");
+            this.appendLine(html, "          " + releaseNode.getAttributes().getNamedItem("version").getTextContent());
+            this.appendLine(html, "          <ul>");
+
+            for (int ticket = 0; ticket < releaseNode.getChildNodes().getLength(); ticket++) {
+                final Node ticketNode = releaseNode.getChildNodes().item(ticket);
+
+                this.appendLine(html, "            <li>");
+                this.appendLine(html, "              " + ticketNode.getFirstChild().getFirstChild().getNodeValue());
+                this.appendLine(html, "              <ul>");
+
+                final String ticketNumber = ticketNode.getAttributes().item(0).getNodeValue();
+
+                this.appendLine(html, "                <li>Ticketnummer: " + ticketNumber + "</li>");
+
+                String author = "-";
+                String priority = "-";
+                String kind = "-";
+
+                for (int attribute = 0; attribute < ticketNode.getChildNodes().getLength(); attribute++) {
+                    final Node attributeNode = ticketNode.getChildNodes().item(attribute);
+
+                    if (isValueSet(attributeNode, "priority")) {
+                        priority = attributeNode.getFirstChild().getNodeValue();
+                    } else if (isValueSet(attributeNode, "kind")) {
+                        kind = attributeNode.getFirstChild().getNodeValue();
+                    } else if (isValueSet(attributeNode, "author")) {
+                        author = attributeNode.getFirstChild().getNodeValue();
+                    }
+                }
+
+                this.appendLine(html, "                <li>Autor: " + author + "</li>");
+                this.appendLine(html, "                <li>Priorität: " + priority + "</li>");
+                this.appendLine(html, "                <li>Art: " + kind + "</li>");
+
+                this.appendLine(html, "              </ul>");
+                this.appendLine(html, "            </li>");
+
+            }
+
+            this.appendLine(html, "          </ul>");
+            this.appendLine(html, "        </li>");
+        }
+
+        this.appendLine(html, "      </ul>");
+    }
+
+    private boolean isValueSet(final Node attributeNode, final String nodeName) {
+        return nodeName.equals(attributeNode.getNodeName()) && attributeNode.getFirstChild().getNodeValue() != null && !"".equals(attributeNode.getFirstChild().getNodeValue());
     }
 
     private void appendLine(final StringBuilder html, final String text) {

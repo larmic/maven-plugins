@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root>
   <title>hi this is a title</title>
-  <release version="1.0">
-    <ticket id="13"/>
-    <ticket id="14"/>
+  <release version="Release 1">
+    <ticket id="7">
+      <title>Test release note ticket 1 (release 1)</title>
+      <priority>major</priority>
+      <kind>proposal</kind>
+    </ticket>
+    <ticket id="8">
+      <title>Test release note ticket 2 (release 1)</title>
+      <priority>major</priority>
+      <kind>bug</kind>
+    </ticket>
+    <ticket id="10">
+      <title>Test release note ticket 3 (release 1)</title>
+      <priority>major</priority>
+      <kind>proposal</kind>
+    </ticket>
   </release>
-  <release version="2.0">
-    <ticket id="7"/>
+  <release version="Release 2">
+    <ticket id="9">
+      <title>Test release note ticket 1 (release 2)</title>
+      <priority>blocker</priority>
+      <kind>task</kind>
+    </ticket>
   </release>
 </root>

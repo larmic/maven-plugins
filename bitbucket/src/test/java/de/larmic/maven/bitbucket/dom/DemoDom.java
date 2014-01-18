@@ -32,24 +32,49 @@ public class DemoDom {
         final Element release1 = document.createElement("release");
         rootElement.appendChild(release1);
 
-        this.documentAppender.appendElementAttribute(document, release1, "version", "1.0");
+        this.documentAppender.appendElementAttribute(document, release1, "version", "Release 1");
 
-        final Element ticket1OnVersion1 = document.createElement("ticket");
-        release1.appendChild(ticket1OnVersion1);
-        this.documentAppender.appendElementAttribute(document, ticket1OnVersion1, "id", "13");
+        final Element ticket1Version1 = document.createElement("ticket");
+        release1.appendChild(ticket1Version1);
+        this.documentAppender.appendElementAttribute(document, ticket1Version1, "id", "7");
+        this.documentAppender.appendTextNode(document, ticket1Version1, "title", "Test release note ticket 1 (release 1)");
+        this.documentAppender.appendTextNode(document, ticket1Version1, "author", "larmic");
+        this.documentAppender.appendTextNode(document, ticket1Version1, "priority", "major");
+        this.documentAppender.appendTextNode(document, ticket1Version1, "kind", "proposal");
 
-        final Element ticket2OnVersion1 = document.createElement("ticket");
-        release1.appendChild(ticket2OnVersion1);
-        this.documentAppender.appendElementAttribute(document, ticket2OnVersion1, "id", "14");
+        final Element ticket2Version1 = document.createElement("ticket");
+        release1.appendChild(ticket2Version1);
+        this.documentAppender.appendElementAttribute(document, ticket2Version1, "id", "8");
+        this.documentAppender.appendTextNode(document, ticket2Version1, "title", "Test release note ticket 2 (release 1)");
+        this.documentAppender.appendTextNode(document, ticket1Version1, "author", "");
+        this.documentAppender.appendTextNode(document, ticket2Version1, "priority", "major");
+        this.documentAppender.appendTextNode(document, ticket2Version1, "kind", "");
+
+        final Element ticket3Version1 = document.createElement("ticket");
+        release1.appendChild(ticket3Version1);
+        this.documentAppender.appendElementAttribute(document, ticket3Version1, "id", "10");
+        this.documentAppender.appendTextNode(document, ticket3Version1, "title", "Test release note ticket 3 (release 1)");
+        this.documentAppender.appendTextNode(document, ticket3Version1, "priority", "major");
+        this.documentAppender.appendTextNode(document, ticket3Version1, "kind", "-");
 
         final Element release2 = document.createElement("release");
         rootElement.appendChild(release2);
 
-        this.documentAppender.appendElementAttribute(document, release2, "version", "2.0");
+        this.documentAppender.appendElementAttribute(document, release2, "version", "Release 2");
 
-        final Element ticket1OnVersion2 = document.createElement("ticket");
-        release2.appendChild(ticket1OnVersion2);
-        this.documentAppender.appendElementAttribute(document, ticket1OnVersion2, "id", "7");
+        final Element ticket1Version2 = document.createElement("ticket");
+        release2.appendChild(ticket1Version2);
+        this.documentAppender.appendElementAttribute(document, ticket1Version2, "id", "9");
+        this.documentAppender.appendTextNode(document, ticket1Version2, "title", "Test release note ticket 1 (release 2)");
+        this.documentAppender.appendTextNode(document, ticket1Version2, "priority", "blocker");
+        this.documentAppender.appendTextNode(document, ticket1Version2, "kind", "task");
+
+        final Element ticket2Version2 = document.createElement("ticket");
+        release2.appendChild(ticket2Version2);
+        this.documentAppender.appendElementAttribute(document, ticket2Version2, "id", "11");
+        this.documentAppender.appendTextNode(document, ticket2Version2, "title", "Test release note ticket 2 (release 2)");
+        this.documentAppender.appendTextNode(document, ticket2Version2, "priority", "trivial");
+        this.documentAppender.appendTextNode(document, ticket2Version2, "kind", "enhancement");
 
         return document;
     }
