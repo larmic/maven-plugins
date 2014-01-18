@@ -23,7 +23,7 @@ public class ReleaseNotesMojoTest {
 
     @Test
     public void testExecute() throws Exception {
-        ReflectionUtils.setField(mojo, "sourceDirectory", new File(""));
+        ReflectionUtils.setField(mojo, "basedir", new File(""));
         ReflectionUtils.setField(mojo, "accountName", "larmicBB");
         ReflectionUtils.setField(mojo, "repositorySlug", "larmic-maven-plugins");
         ReflectionUtils.setField(mojo, "title", "testtitle");
