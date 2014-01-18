@@ -37,7 +37,7 @@ Call
 
 in your maven project root directory you want to execute goal in.
 
-### Using pom.xml settings
+### Using settings.xml settings
 
 Add
 
@@ -52,6 +52,31 @@ to your maven settings.xml and call
     $ mvn bitbucket:$pluginGoal -Dbitbucket.userName=$repositoryBitbucketAccount -Dbitbucket.password=$bitbucketRepositorySlug
 
 in your maven project root directory you want to execute goal in.
+
+### Using pom.xml settings
+
+Add
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>de.larmic</groupId>
+            <artifactId>larmic-maven-bitbucket-plugin</artifactId>
+            <version>1.2-SNAPSHOT</version>
+            <configuration>
+                <accountName>$repositoryBitbucketAccount</accountName>
+                <repositorySlug>$bitbucketRepositorySlug</repositorySlug>
+                <userName>$bitbucketAccount</userName>
+            </configuration>
+        </plugin>
+	</plugins>
+</build>
+```
+
+to your projects pom.xml and call
+
+    $ mvn bitbucket:$pluginGoal -Dbitbucket.password=$bitbucketPassword
 
 ### Configuring account name and Repository slug in pom.xml
 
