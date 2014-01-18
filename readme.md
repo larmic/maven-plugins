@@ -133,20 +133,6 @@ Now you can call maven plugin without explicit indicating property
 
 ## Examples
 
-Update settings.xml
-
-``` xml
-<?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-    ...
-    <pluginGroups>
-        <pluginGroup>de.larmic</pluginGroup>
-    </pluginGroups>
-</settings>
-```
-
 Update pom.xml
 
 ```xml
@@ -154,10 +140,19 @@ Update pom.xml
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     ...
-    <properties>
-        <bitbucket.accountName>larmicBB</bitbucket.accountName>
-        <bitbucket.repositorySlug>larmic-maven-plugins</bitbucket.repositorySlug>
-    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.larmic</groupId>
+                <artifactId>larmic-maven-bitbucket-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <accountName>larmicBB</accountName>
+                    <repositorySlug>larmic-maven-plugins</repositorySlug>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 ```
 
