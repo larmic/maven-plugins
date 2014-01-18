@@ -19,6 +19,25 @@ larmic-maven-plugins is accessible by maven central repository. Add following de
 </dependency>
 ```
 
+Or add the following to your pom.xml
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>de.larmic</groupId>
+            <artifactId>larmic-maven-bitbucket-plugin</artifactId>
+            <version>1.1</version>
+            <configuration>
+                <accountName>$repositoryBitbucketAccount</accountName>
+                <repositorySlug>$bitbucketRepositorySlug</repositorySlug>
+                <userName>$bitbucketAccount</userName>
+            </configuration>
+        </plugin>
+	</plugins>
+</build>
+```
+
 Or you can clone git repository and install maven plugin by yourself.
 
 * Checkout the source: `git clone git@bitbucket.org:larmicBB/larmic-maven-plugins.git`.
@@ -63,7 +82,7 @@ Add
         <plugin>
             <groupId>de.larmic</groupId>
             <artifactId>larmic-maven-bitbucket-plugin</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>1.1</version>
             <configuration>
                 <accountName>$repositoryBitbucketAccount</accountName>
                 <repositorySlug>$bitbucketRepositorySlug</repositorySlug>
