@@ -5,23 +5,24 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Created by larmic on 17.01.14.
+ * Created by larmic on 18.01.14.
  */
-public class XmlDocumentConverterTest {
+public class HtmlDocumentConverterTest {
 
-    private final DemoDom demoDom = new DemoDom("demoDom.xml");
+    private final DemoDom demoDom = new DemoDom("demoDom.html");
 
-    private DocumentConverter xmlDocumentConverter;
+    private DocumentConverter htmlDocumentConverter;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        xmlDocumentConverter = new XmlDocumentConverter();
+        htmlDocumentConverter = new HtmlDocumentConverter();
     }
 
     @Test
     public void testConvertDocumentToString() throws Exception {
-        final String xml = this.xmlDocumentConverter.convertDocumentToString(demoDom.createDemoDocument());
+        final String xml = this.htmlDocumentConverter.convertDocumentToString(demoDom.createDemoDocument());
 
         Assert.assertEquals(xml, demoDom.getTestFileContent());
     }
+
 }

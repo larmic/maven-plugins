@@ -16,8 +16,8 @@ public class DemoDom {
     private final String testFileContent;
 
 
-    public DemoDom() {
-        this.testFileContent = new FileReader("demoDom.xml").getTestFileContent();
+    public DemoDom(final String resourceFileName) {
+        this.testFileContent = new FileReader(resourceFileName).getTestFileContent();
     }
 
     public Document createDemoDocument() throws ParserConfigurationException {
