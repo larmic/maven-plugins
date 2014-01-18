@@ -5,6 +5,8 @@ Containing maven plugins:
 * **bitbucket:checkTodo** Logs info messages to find all code Todos in source and test source directory. Checks bitbucket ticket status and logs error
 message if ticket is already resolved.
 
+* **bitbucket:createReleaseNotes** Creates a release notes file (actual xml) to the specified directory. Checks resolved bitbucket tickets and sorts it by version.
+
 ## Install
 
 larmic-maven-plugins is accessible by maven central repository. Add following dependency to use it
