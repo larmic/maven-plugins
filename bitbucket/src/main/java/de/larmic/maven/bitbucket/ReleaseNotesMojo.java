@@ -3,6 +3,7 @@ package de.larmic.maven.bitbucket;
 import de.larmic.maven.bitbucket.dom.DocumentAppender;
 import de.larmic.maven.bitbucket.dom.DocumentConverter;
 import de.larmic.maven.bitbucket.dom.XmlDocumentConverter;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.json.simple.JSONArray;
@@ -37,9 +38,9 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
     private final DocumentConverter xmlDocumentConverter = new XmlDocumentConverter();
 
     /**
-     * @parameter expression="${project.build.sourceDirectory}"
+     * @parameter expression="${basedir}"
      */
-    private File sourceDirectory;
+    private File basedir;
 
     /**
      * @parameter expression="${releasenotes.title}" default-value="Release notes ${project.name}"
@@ -58,7 +59,7 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
 
     @Override
     public void executeMojo() throws MojoExecutionException {
-        final Path xmlFile = new File(this.sourceDirectory.getAbsolutePath() + this.relativePath + "/releasenotes.xml").toPath();
+        final Path xmlFile = new File(this.basedir.getAbsolutePath() + this.relativePath + "/releasenotes.xml").toPath();
 
         try {
             if (Files.exists(xmlFile)) {
@@ -84,7 +85,7 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
         }
     }
 
-    private Map<String, List<JSONObject>> findIssues() throws IOException {
+    private Map<String, List<JSONObject>> findIssues() throws IOException, MojoExecutionException {
         final Map<String, List<JSONObject>> issues = new HashMap<>();
 
         final BitbucketApiClient bitbucketApiClient = createBitbucketApiClient();
@@ -93,10 +94,15 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
             final String apiQuery = createApiQuery(1, 0);
             final CloseableHttpResponse response = bitbucketApiClient.execute(apiQuery);
 
-            if (response.getStatusLine().getStatusCode() == 404) {
-                getLog().error("404 not found " + bitbucketApiClient.getBitbucketApi1RepositoryUrl() + apiQuery);
-            } else {
+            getLog().info("Opening " + bitbucketApiClient.getBitbucketApi1RepositoryUrl() + apiQuery);
 
+            final StatusLine responseStatusLine = response.getStatusLine();
+
+            if (responseStatusLine.getStatusCode() != BitbucketApiClient.STATUS_CODE_OK) {
+                getLog().error(responseStatusLine.getStatusCode() + " (" + responseStatusLine.getReasonPhrase() + ") username or password incorrect.");
+                throw new MojoExecutionException(responseStatusLine.getStatusCode() + " (" + responseStatusLine.getReasonPhrase() + ") " +
+                        bitbucketApiClient.getBitbucketApi1RepositoryUrl() + apiQuery);
+            } else {
                 final Integer count = ((Long) this.createJSON(response).get("count")).intValue();
 
                 if (count > 0) {
