@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 import org.testng.reporters.Files;
 
 import java.io.File;
-import java.nio.file.DirectoryNotEmptyException;
 
 /**
  * Created by larmic on 13.01.14.
@@ -32,14 +31,18 @@ public class ReleaseNotesMojoTest {
 
         this.mojo.execute();
 
-        final File file = new File("bitbucket/releaseNotes.xml");
+        final File xmlFile = new File("bitbucket/releaseNotes.xml");
+        final File htmlFile = new File("bitbucket/releaseNotes.html");
 
-        Assert.assertEquals(Files.readFile(file), new FileReader("projectReleaseNotes.xml").getTestFileContent());
+        Assert.assertEquals(Files.readFile(xmlFile), new FileReader("projectReleaseNotes.xml").getTestFileContent());
+        Assert.assertEquals(Files.readFile(htmlFile), new FileReader("projectReleaseNotes.html").getTestFileContent());
 
-        java.nio.file.Files.delete(file.toPath());
+        java.nio.file.Files.delete(xmlFile.toPath());
+        java.nio.file.Files.delete(htmlFile.toPath());
+
         try {
-            java.nio.file.Files.delete(file.toPath().getParent());
-        } catch (DirectoryNotEmptyException e) {
+            java.nio.file.Files.delete(xmlFile.toPath().getParent());
+        } catch (Exception e) {
 
         }
     }

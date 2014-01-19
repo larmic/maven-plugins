@@ -55,6 +55,7 @@ public class HtmlDocumentConverter implements DocumentConverter {
         this.appendLine(html, "    }");
         this.appendLine(html, "    footer {");
         this.appendLine(html, "      text-align: center;");
+        this.appendLine(html, "      padding-bottom: 40px;");
         this.appendLine(html, "    }");
         this.appendLine(html, "    a {");
         this.appendLine(html, "      text-decoration: none;");

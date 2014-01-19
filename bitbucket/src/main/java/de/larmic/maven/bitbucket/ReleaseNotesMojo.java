@@ -1,7 +1,7 @@
 package de.larmic.maven.bitbucket;
 
 import de.larmic.maven.bitbucket.dom.DocumentAppender;
-import de.larmic.maven.bitbucket.dom.DocumentConverter;
+import de.larmic.maven.bitbucket.dom.HtmlDocumentConverter;
 import de.larmic.maven.bitbucket.dom.XmlDocumentConverter;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -35,7 +35,6 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
 
     private final DocumentAppender documentAppender = new DocumentAppender();
 
-    private final DocumentConverter xmlDocumentConverter = new XmlDocumentConverter();
 
     /**
      * @parameter expression="${basedir}"
@@ -59,30 +58,41 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
 
     @Override
     public void executeMojo() throws MojoExecutionException {
-        final Path xmlFile = new File(this.basedir.getAbsolutePath() + this.relativePath + "/releasenotes.xml").toPath();
+        final XmlDocumentConverter xmlDocumentConverter = new XmlDocumentConverter();
+        final HtmlDocumentConverter htmlDocumentConverter = new HtmlDocumentConverter();
 
         try {
-            if (Files.exists(xmlFile)) {
-                Files.delete(xmlFile);
-            }
-
-            if (!Files.exists(xmlFile.getParent())) {
-                Files.createDirectories(xmlFile.getParent());
-            }
-
-            Files.createFile(xmlFile);
             final Map<String, List<JSONObject>> issues = findIssues();
 
-            final String content = this.xmlDocumentConverter.convertDocumentToString(this.createReleaseNotesDocument(issues));
+            final String xmlContent = xmlDocumentConverter.convertDocumentToString(this.createReleaseNotesDocument(issues));
+            final Path xmlFile = new File(this.basedir.getAbsolutePath() + this.relativePath + "/releasenotes.xml").toPath();
+            this.writeContent(xmlContent, xmlFile);
 
-            Files.write(xmlFile, content.getBytes(), StandardOpenOption.CREATE);
-
-            getLog().info(xmlFile.toUri() + " created.");
+            final String htmlContent = htmlDocumentConverter.convertDocumentToString(this.createReleaseNotesDocument(issues));
+            final Path htmlFile = new File(this.basedir.getAbsolutePath() + this.relativePath + "/releasenotes.html").toPath();
+            this.writeContent(htmlContent, htmlFile);
         } catch (IOException e) {
-            throw new MojoExecutionException("Could not create release notes file " + xmlFile.getFileName(), e);
+            throw new MojoExecutionException("Could not create release notes file", e);
         } catch (TransformerException e) {
             throw new MojoExecutionException("Could not transform document to xml", e);
         }
+    }
+
+    private void writeContent(final String xmlContent, final Path xmlFile) throws IOException {
+        if (Files.exists(xmlFile)) {
+            Files.delete(xmlFile);
+        }
+
+        if (!Files.exists(xmlFile.getParent())) {
+            Files.createDirectories(xmlFile.getParent());
+        }
+
+        Files.createFile(xmlFile);
+
+
+        Files.write(xmlFile, xmlContent.getBytes(), StandardOpenOption.CREATE);
+
+        getLog().info(xmlFile.toUri() + " created.");
     }
 
     private Map<String, List<JSONObject>> findIssues() throws IOException, MojoExecutionException {
