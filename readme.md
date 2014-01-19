@@ -130,6 +130,10 @@ Now you can call maven plugin without explicit indicating property
 * **title** Title is part of the content of the created file. Default is `Release notes ${project.name}`.
 * **ignoreTicketWithNoVersion** Ignores bitbucket tickets with no version is set when value is `true`. Default is `false`.
 * **relativePath** Project relative path the files are created in. Default is `/src/main/webapp/`.
+* **hideTicketNumber** Hides ticket number in created html release notes.
+* **hideAuthor** Hides author in created html release notes.
+* **hidePriority** Hides priority in created html release notes.
+* **hideKind** Hides kind in created html release notes.
 
 ## Examples
 
