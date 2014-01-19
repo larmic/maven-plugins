@@ -136,9 +136,9 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
                 final Integer count = ((Long) this.createJSON(response).get("count")).intValue();
 
                 if (count > 0) {
-                    for (int issueNumber = 0; issueNumber <= count / MAX_ISSUE_LIMIT; issueNumber += MAX_ISSUE_LIMIT) {
-                        final int startIssue = issueNumber;
-                        final CloseableHttpResponse r = bitbucketApiClient.execute(createApiQuery(MAX_ISSUE_LIMIT, startIssue));
+                    for (int issueNumber = 0; issueNumber <= count / MAX_ISSUE_LIMIT; issueNumber++) {
+                        final int startIssue = issueNumber * MAX_ISSUE_LIMIT;
+                        final CloseableHttpResponse r = createBitbucketApiClient().execute(createApiQuery(MAX_ISSUE_LIMIT, startIssue));
 
                         final ArrayList<JSONObject> part = (JSONArray) createJSON(r).get("issues");
 
