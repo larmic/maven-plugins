@@ -245,4 +245,3 @@ will create
   </release>
 </releasenotes>
 ```
-<script src="https://bitbucket.org/larmicBB/larmic-maven-plugins/src/cd3df6972e0bf7f7d4119fdbf7994cfbeb0b3887/exampleReleaseNotes.xml?embed=t"></script>
