@@ -246,4 +246,5 @@ will create
 </releasenotes>
 ```
 
-and [![Foo](https://bitbucket.org/larmicBB/larmic-maven-plugins/raw/182d06944e81b303abfd0f2e3f1e205126044615/releaseNotesExample.png)](https://bitbucket.org/larmicBB/larmic-maven-plugins)
+and html [![Foo](https://bitbucket.org/larmicBB/larmic-maven-plugins/raw/182d06944e81b303abfd0f2e3f1e205126044615/releaseNotesExample.png)]
+(https://bitbucket.org/larmicBB/larmic-maven-plugins)
