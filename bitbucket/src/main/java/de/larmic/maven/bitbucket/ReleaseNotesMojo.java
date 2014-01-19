@@ -52,6 +52,26 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
     private boolean ignoreTicketWithNoVersion;
 
     /**
+     * @parameter expression="${releasenotes.hideTicketNumber}" default-value="false"
+     */
+    private boolean hideTicketNumber;
+
+    /**
+     * @parameter expression="${releasenotes.hideAuthor}" default-value="false"
+     */
+    private boolean hideAuthor;
+
+    /**
+     * @parameter expression="${releasenotes.hidePriority}" default-value="false"
+     */
+    private boolean hidePriority;
+
+    /**
+     * @parameter expression="${releasenotes.hideKind}" default-value="false"
+     */
+    private boolean hideKind;
+
+    /**
      * @parameter expression="${releasenotes.relativePath}" default-value="/src/main/webapp/"
      */
     private String relativePath;
@@ -59,7 +79,7 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
     @Override
     public void executeMojo() throws MojoExecutionException {
         final XmlDocumentConverter xmlDocumentConverter = new XmlDocumentConverter();
-        final HtmlDocumentConverter htmlDocumentConverter = new HtmlDocumentConverter();
+        final HtmlDocumentConverter htmlDocumentConverter = new HtmlDocumentConverter(this.hideAuthor, this.hidePriority, this.hideKind, this.hideTicketNumber);
 
         try {
             final Map<String, List<JSONObject>> issues = findIssues();

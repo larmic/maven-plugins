@@ -10,6 +10,18 @@ import javax.xml.transform.TransformerException;
  */
 public class HtmlDocumentConverter implements DocumentConverter {
 
+    private final boolean hideAuthor;
+    private final boolean hidePriority;
+    private final boolean hideKind;
+    private final boolean hideTicketNumber;
+
+    public HtmlDocumentConverter(final boolean hideAuthor, final boolean hidePriority, final boolean hideKind, final boolean hideTicketNumber) {
+        this.hideAuthor = hideAuthor;
+        this.hidePriority = hidePriority;
+        this.hideKind = hideKind;
+        this.hideTicketNumber = hideTicketNumber;
+    }
+
     @Override
     public String convertDocumentToString(final Document doc) throws TransformerException {
         final StringBuilder html = new StringBuilder();
@@ -111,33 +123,44 @@ public class HtmlDocumentConverter implements DocumentConverter {
 
                 this.appendLine(html, "            <li>");
                 this.appendLine(html, "              " + ticketNode.getFirstChild().getFirstChild().getNodeValue());
-                this.appendLine(html, "              <ul>");
 
-                final String ticketNumber = ticketNode.getAttributes().item(0).getNodeValue();
+                if (!(hideTicketNumber && hideKind && hidePriority && hideAuthor)) {
+                    this.appendLine(html, "              <ul>");
 
-                this.appendLine(html, "                <li>Ticketnummer: " + ticketNumber + "</li>");
-
-                String author = "-";
-                String priority = "-";
-                String kind = "-";
-
-                for (int attribute = 0; attribute < ticketNode.getChildNodes().getLength(); attribute++) {
-                    final Node attributeNode = ticketNode.getChildNodes().item(attribute);
-
-                    if (isValueSet(attributeNode, "priority")) {
-                        priority = attributeNode.getFirstChild().getNodeValue();
-                    } else if (isValueSet(attributeNode, "kind")) {
-                        kind = attributeNode.getFirstChild().getNodeValue();
-                    } else if (isValueSet(attributeNode, "author")) {
-                        author = attributeNode.getFirstChild().getNodeValue();
+                    if (!hideTicketNumber) {
+                        final String ticketNumber = ticketNode.getAttributes().item(0).getNodeValue();
+                        this.appendLine(html, "                <li>Ticketnummer: " + ticketNumber + "</li>");
                     }
+
+                    String author = "-";
+                    String priority = "-";
+                    String kind = "-";
+
+                    for (int attribute = 0; attribute < ticketNode.getChildNodes().getLength(); attribute++) {
+                        final Node attributeNode = ticketNode.getChildNodes().item(attribute);
+
+                        if (isValueSet(attributeNode, "priority")) {
+                            priority = attributeNode.getFirstChild().getNodeValue();
+                        } else if (isValueSet(attributeNode, "kind")) {
+                            kind = attributeNode.getFirstChild().getNodeValue();
+                        } else if (isValueSet(attributeNode, "author")) {
+                            author = attributeNode.getFirstChild().getNodeValue();
+                        }
+                    }
+
+                    if (!hideAuthor) {
+                        this.appendLine(html, "                <li>Autor: " + author + "</li>");
+                    }
+                    if (!hidePriority) {
+                        this.appendLine(html, "                <li>Prioritaet: " + priority + "</li>");
+                    }
+                    if (!hideKind) {
+                        this.appendLine(html, "                <li>Art: " + kind + "</li>");
+                    }
+
+                    this.appendLine(html, "              </ul>");
                 }
 
-                this.appendLine(html, "                <li>Autor: " + author + "</li>");
-                this.appendLine(html, "                <li>Prioritaet: " + priority + "</li>");
-                this.appendLine(html, "                <li>Art: " + kind + "</li>");
-
-                this.appendLine(html, "              </ul>");
                 this.appendLine(html, "            </li>");
 
             }
