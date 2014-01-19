@@ -7,7 +7,7 @@
 
     <name>A collection of maven plugins</name>
     <description>A collection of maven plugins</description>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
 
     <url>https://bitbucket.org/larmicBB/larmic-maven-plugins</url>
 
@@ -33,7 +33,7 @@
         <connection>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</connection>
         <url>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</url>
         <developerConnection>scm:git:git@bitbucket.org:larmicBB/larmic-maven-plugins.git</developerConnection>
-        <tag>larmic-maven-plugin-1.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
