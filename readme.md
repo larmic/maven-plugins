@@ -15,7 +15,7 @@ larmic-maven-plugins is accessible by maven central repository. Add following de
 <dependency>
     <groupId>de.larmic</groupId>
     <artifactId>larmic-maven-bitbucket-plugin</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 
@@ -27,7 +27,7 @@ Or add the following to your pom.xml
         <plugin>
             <groupId>de.larmic</groupId>
             <artifactId>larmic-maven-bitbucket-plugin</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
             <configuration>
                 <accountName>$repositoryBitbucketAccount</accountName>
                 <repositorySlug>$bitbucketRepositorySlug</repositorySlug>
@@ -82,7 +82,7 @@ Add
         <plugin>
             <groupId>de.larmic</groupId>
             <artifactId>larmic-maven-bitbucket-plugin</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
             <configuration>
                 <accountName>$repositoryBitbucketAccount</accountName>
                 <repositorySlug>$bitbucketRepositorySlug</repositorySlug>
@@ -149,7 +149,7 @@ Update pom.xml
             <plugin>
                 <groupId>de.larmic</groupId>
                 <artifactId>larmic-maven-bitbucket-plugin</artifactId>
-                <version>1.1</version>
+                <version>1.2</version>
                 <configuration>
                     <accountName>larmicBB</accountName>
                     <repositorySlug>larmic-maven-plugins</repositorySlug>
