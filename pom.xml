@@ -62,6 +62,7 @@
         <mockito-all.version>1.9.5</mockito-all.version>
         <json-simple.version>1.1.1</json-simple.version>
         <httpclient.version>4.3.1</httpclient.version>
+        <velocity.version>1.7</velocity.version>
 
         <!-- maven plugin dependency version -->
         <maven-plugin-api.version>3.1.1</maven-plugin-api.version>
@@ -141,6 +142,11 @@
                 <groupId>com.googlecode.json-simple</groupId>
                 <artifactId>json-simple</artifactId>
                 <version>${json-simple.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>${velocity.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>

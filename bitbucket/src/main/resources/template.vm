@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta charset="utf-8">
-  <title>testtitle</title>
+  <title>$applicationName</title>
   <style>
     body {
       margin: 0;
@@ -64,67 +64,11 @@
 </head>
 <body>
   <header role="banner">
-    <h1>testtitle</h1>
+    <h1>$applicationName</h1>
   </header>
   <div role="main">
     <div id="content">
-      <ul>
-        <li>
-          Release 2
-          <ul>
-            <li>
-              Test release note ticket 1 (release 2)
-              <ul>
-                <li>Ticketnummer: 9</li>
-                <li>Autor: -</li>
-                <li>Prioritaet: blocker</li>
-                <li>Art: task</li>
-              </ul>
-            </li>
-            <li>
-              Test release note ticket 2 (release 2)
-              <ul>
-                <li>Ticketnummer: 11</li>
-                <li>Autor: -</li>
-                <li>Prioritaet: trivial</li>
-                <li>Art: enhancement</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li>
-          Release 1
-          <ul>
-            <li>
-              Test release note ticket 1 (release 1)
-              <ul>
-                <li>Ticketnummer: 7</li>
-                <li>Autor: -</li>
-                <li>Prioritaet: major</li>
-                <li>Art: proposal</li>
-              </ul>
-            </li>
-            <li>
-              Test release note ticket 2 (release 1)
-              <ul>
-                <li>Ticketnummer: 8</li>
-                <li>Autor: -</li>
-                <li>Prioritaet: major</li>
-                <li>Art: bug</li>
-              </ul>
-            </li>
-            <li>
-              Test release note ticket 3 (release 1)
-              <ul>
-                <li>Ticketnummer: 10</li>
-                <li>Autor: -</li>
-                <li>Prioritaet: major</li>
-                <li>Art: bug</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
+$content
     </div>
   </div>
   <footer role="contentinfo">

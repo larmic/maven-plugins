@@ -13,10 +13,8 @@ public class FileReader {
     private final String testFileContent;
 
     public FileReader(final String resourceFileName) {
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        final InputStream stream = loader.getResourceAsStream(resourceFileName);
-
-        this.testFileContent = getStringFromInputStream(stream);
+        final InputStream resourceAsStream = this.getClass().getResourceAsStream("/" + resourceFileName);
+        this.testFileContent = getStringFromInputStream(resourceAsStream);
     }
 
     public String getTestFileContent() {
