@@ -27,16 +27,14 @@ public class ReleaseNotesMojoTest {
         ReflectionUtils.setField(mojo, "repositorySlug", "larmic-maven-plugins");
         ReflectionUtils.setField(mojo, "title", "testtitle");
         ReflectionUtils.setField(mojo, "ignoreTicketWithNoVersion", true);
-        ReflectionUtils.setField(mojo, "relativePath", "/bitbucket");
+        ReflectionUtils.setField(mojo, "relativePath", "/target");
 
         this.mojo.execute();
 
-        final File xmlFile = new File("bitbucket/releaseNotes.xml");
-        final File htmlFile = new File("bitbucket/releaseNotes.html");
+        final File xmlFile = new File("target/releaseNotes.xml");
+        final File htmlFile = new File("target/releaseNotes.html");
 
         mojo.getLog().error("File path: " + xmlFile.getAbsolutePath());
-        mojo.getLog().error("File content: " + new FileReader("releaseNotes.xml"));
-        mojo.getLog().error("File content: " + new FileReader("releaseNotes.xml").getTestFileContent());
         mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml"));
         mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml").getTestFileContent());
 
