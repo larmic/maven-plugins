@@ -41,6 +41,7 @@ public class ReleaseNotesMojoTest {
         mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml").getTestFileContent());
 
         final Path xmlFilePath = xmlFile.toPath();
+        mojo.getLog().error("" + xmlFilePath.toUri());
         mojo.getLog().error("" + java.nio.file.Files.exists(xmlFilePath));
 
         Assert.assertEquals(Files.readFile(xmlFile), new FileReader("projectReleaseNotes.xml").getTestFileContent());
