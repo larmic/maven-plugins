@@ -35,6 +35,8 @@ public class ReleaseNotesMojoTest {
         final File htmlFile = new File("bitbucket/releaseNotes.html");
 
         mojo.getLog().error("File path: " + xmlFile.getAbsolutePath());
+        mojo.getLog().error("File content: " + new FileReader("releaseNotes.xml"));
+        mojo.getLog().error("File content: " + new FileReader("releaseNotes.xml").getTestFileContent());
         mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml"));
         mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml").getTestFileContent());
 
