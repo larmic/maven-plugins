@@ -38,7 +38,6 @@ public class ReleaseNotesMojoTest {
 
         mojo.getLog().error("File path: " + xmlFile.getAbsolutePath());
         mojo.getLog().error("File path: " + xmlFile.exists());
-        mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml").getTestFileContent());
 
         final Path xmlFilePath = xmlFile.toPath();
         mojo.getLog().error("" + xmlFilePath.toUri());
