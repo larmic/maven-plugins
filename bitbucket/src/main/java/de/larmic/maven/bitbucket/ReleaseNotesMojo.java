@@ -109,10 +109,10 @@ public class ReleaseNotesMojo extends AbstractBitbucketMojo {
 
         Files.createFile(xmlFile);
 
-
         Files.write(xmlFile, xmlContent.getBytes(), StandardOpenOption.CREATE);
 
         getLog().info(xmlFile.toUri() + " created.");
+        getLog().info("" + Files.exists(xmlFile));
     }
 
     private Map<String, List<JSONObject>> findIssues() throws IOException, MojoExecutionException {
