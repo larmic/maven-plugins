@@ -34,6 +34,8 @@ public class ReleaseNotesMojoTest {
         final File xmlFile = new File("bitbucket/releaseNotes.xml");
         final File htmlFile = new File("bitbucket/releaseNotes.html");
 
+        mojo.getLog().error("File path: " + xmlFile.getAbsolutePath());
+
         Assert.assertEquals(Files.readFile(xmlFile), new FileReader("projectReleaseNotes.xml").getTestFileContent());
         Assert.assertEquals(Files.readFile(htmlFile), new FileReader("projectReleaseNotes.html").getTestFileContent());
 
