@@ -35,6 +35,7 @@ public class ReleaseNotesMojoTest {
         final File htmlFile = new File("target/releaseNotes.html");
 
         mojo.getLog().error("File path: " + xmlFile.getAbsolutePath());
+        mojo.getLog().error("File path: " + xmlFile.exists());
         mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml"));
         mojo.getLog().error("File content: " + new FileReader("projectReleaseNotes.xml").getTestFileContent());
 
