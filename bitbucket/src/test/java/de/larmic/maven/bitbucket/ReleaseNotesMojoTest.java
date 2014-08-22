@@ -20,7 +20,7 @@ public class ReleaseNotesMojoTest {
         mojo = new ReleaseNotesMojo();
     }
 
-    // TODO Fix CI problem
+    // TODO MAV-1 Fix CI problem
     @Test(enabled = false, description = "test fail on CI")
     public void testExecute() throws Exception {
         ReflectionUtils.setField(mojo, "basedir", new File(""));
